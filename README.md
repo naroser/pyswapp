@@ -100,7 +100,7 @@ dependencies:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/AlbCa/swa.git
+   git clone https://github.com/naroser/pyswapp.git
 
 2. Installing the library
 
