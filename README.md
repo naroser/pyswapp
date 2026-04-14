@@ -1,7 +1,7 @@
 # pySWApp - an interactive, open-source python toolbox for processing seismic surface wave data
 
 by
-Nathalie Roser, Ilaria Barone, Alberto Carrera and Adrián Flores Orozco
+Nathalie Roser, Ilaria Barone, Alberto Carrera and Adrian Flores Orozco
 
 ---
 
