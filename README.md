@@ -47,34 +47,44 @@ Contains the core processing routines:
 ---
 
 ### **Examples**
-Scripts and Jupyter Notebooks demonstrating various use cases:
-- **`0_create_geometry`**  
-  Create and read a `geometry.csv` file.
-- **`1_manager_basics`**  
-  An overview of basic capabilities applied to a single shot gather.
-- **`2a_run_MASW2D`**  
-  Exemplary use of the MASW2D Manager.
-- **`2b_run_MASW2D_windowing`**  
-  Exemplary use of the MASW2D Manager with additional spatial windowing.
-- **`3_run_tomo2d`**  
-  Exemplary use of the Tomo2D Manager.
-- **`4a_combine_curves`**  
-  Dispersion curve combination.
-- **`4b_process_curves`**  
-  Post-processing of dispersion curves.
+Scripts and Jupyter Notebooks demonstrating various use cases
+- **`synthetic/`**
+  Example codes using the synthetic data. 
+  - **`0_create_geometry`**  
+    Create and read a `geometry.csv` file.
+  - **`1_manager_basics`**  
+    An overview of basic capabilities applied to a single shot gather.
+  - **`2a_run_MASW2D`**  
+    Exemplary use of the MASW2D Manager.
+  - **`2b_run_MASW2D_windowing`**  
+    Exemplary use of the MASW2D Manager with additional spatial windowing.
+  - **`3_run_tomo2d`**  
+    Exemplary use of the Tomo2D Manager.
+  - **`4a_combine_curves`**  
+    Dispersion curve combination.
+  - **`4b_process_curves`**  
+    Post-processing of dispersion curves.
+- **`real/`**
+  Example code using the real data. 
+  - **`NB1_masw2D-window`**
+  
 
 ---
 
 ### **Data: `data`**
-Directory for raw and processed data:
+Directory for raw data:
 - **`syn_data/`**  
   Synthetic data set.
-  - **`proc/`**  
-    Processed data.
-    - **`1_basics/`**  
-      Project folder containing processing outputs.
   - **`raw/`**  
     Original raw data.
+  - **`geometry.csv`**
+    geometry file
+- **`real_data/`**  
+  Field data set.
+  - **`raw/`**  
+    Original raw data.
+  - **`geometry.csv`**
+    geometry file
 
 ---
 
