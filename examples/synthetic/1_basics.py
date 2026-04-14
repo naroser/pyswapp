@@ -153,7 +153,7 @@ swam.preprocess(type = 'filter', by = 'taper')
 
 
 # Filter in FK based on a file containing the filter (points along line to mute data abov or below)
-swam.preprocess_streams(type='filter', by = 'FK', fname = 'FKfilter.txt')
+swam.preprocess(type='filter', by = 'FK', fname = 'FKfilter.txt')
 
 
 # 3.3.3 Import/export filter for whole database
