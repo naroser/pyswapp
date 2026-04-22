@@ -1,0 +1,425 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "9354cae8-0679-4675-9bc7-8c47174d786a",
+   "metadata": {},
+   "source": [
+    "# 4.b. Post-process dispersion curves"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "617307f5-5372-4bef-93bd-2c074a5c4a26",
+   "metadata": {},
+   "source": [
+    "Filter, smooth, resample dispersion curves"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "26aedccb-c705-4891-b5aa-938d4f4024b0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from pyswapp import *"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6abce062-e84a-4b74-a3b0-62da421de112",
+   "metadata": {},
+   "source": [
+    "### 1. Set the directories"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "0a8b3eea-1ce7-4db3-bd84-155ae16ca558",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "prj_dir = '../../data/syn_data' # project directory\n",
+    "path2raw = os.path.join(prj_dir,'raw') # path to raw data\n",
+    "path2geom = f'{prj_dir}/geometry.csv' # path to the geometry file"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "cfa33a6f-e36e-4784-bd55-e46e6a819169",
+   "metadata": {},
+   "source": [
+    "### 2. User defined settings for processing and plotting"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "d69b7074-fba1-460b-9a3e-02ffba530615",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "settings = create_settings(fmin=10, fmax=50,                  # frequency range\n",
+    "                           vmin=10, vmax=1000, velstep=1)     # testing phase velocity range and step"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a43ffe50-2f9e-47ea-a42f-37a7ce93679d",
+   "metadata": {},
+   "source": [
+    "### 3. Set up the MASW2DManager"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0bae7ad5-5322-4421-beef-be3389c134af",
+   "metadata": {},
+   "source": [
+    "Dispersion curve processing is possible with all Managers using the identical syntax."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "be184789-f29f-42b4-b62c-4dd8d0e740c4",
+   "metadata": {},
+   "source": [
+    "#### 3.1 Create a new project"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "628f78a7-68bc-48c0-bf3e-6f62d3642f4f",
+   "metadata": {},
+   "source": [
+    "Create a new project from scratch"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a0f2894b-637a-4a36-88fa-3a55b479997d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "swam = MASW2DManager(f'{prj_dir}/proc/4b_MASW2D',             # project directory path\n",
+    "                   path2raw=path2raw,                       # optional, copy & per default rename data from path (outside project directory)\n",
+    "                   path2geom=path2geom,                     # optional, copy geom from path (outside project directory)\n",
+    "                   settings=settings,                       # optional, define settings for visualisations and processing\n",
+    "                   rename = False,                          # optional, rename copied raw data to preferred filename format (Shotfile_<index>), default value is False!\n",
+    "                   overwrite = False,                       # optional, overwrite database .db file if it already exists --> create new project data base\n",
+    "                   )"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "55db6aa1-e1d9-43a8-ad12-9f02b37cc633",
+   "metadata": {},
+   "source": [
+    "#### 3.2 Load a project"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "2c4aa6d3-472a-43f4-ad47-5d850e723e04",
+   "metadata": {},
+   "source": [
+    "Load an existing project"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "86204c96-2c1d-40c3-a716-d9119d2d717f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "swam = MASW2DManager(f'{prj_dir}/proc/4b_MASW2D') # project directory path"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4ba7c233-352e-4a0a-b0ff-23057a63a760",
+   "metadata": {},
+   "source": [
+    "#### 3.3 Preprocess data"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "8005d33a-dab0-4161-897e-a962637a6079",
+   "metadata": {},
+   "source": [
+    "Apply one or several pre-processing options to the data"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "1c34fddc-2dca-4ca6-8ee3-2d73f6a020ce",
+   "metadata": {},
+   "source": [
+    "3.3.1 Trimming"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cdb363eb-25e3-4e48-a139-3923503297ca",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "processing_kwargs = {'min': 2, 'max': 26} # arguments for the processing\n",
+    "swam.preprocess(type='trim',by = 'offset',**processing_kwargs)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "5700e0f0-905e-4017-a145-8f9ad69cd724",
+   "metadata": {},
+   "source": [
+    "### 4. Dispersion curve extraction"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "44697da4-af71-4bf6-8e44-3b010e899c54",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# automatic dispersion curve extraction using MOPA\n",
+    "swam.extract(method = 'MOPA', stopAtChi2 = 1, abs_err = 0.01)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "bcdec62f-7712-43b9-90f1-86c510160058",
+   "metadata": {},
+   "source": [
+    "### 5. Apply processing to dispersion curves"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "72f205bf-2430-45cf-8f45-c019bde9c84f",
+   "metadata": {},
+   "source": [
+    "5.1 Smoothing"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e4722e9f-e8ce-4402-a17f-09c6d25539ee",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Kernel size \n",
+    "processing_kwargs = {'kernel_size':3}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "6d64a8d5-8895-4175-9080-b2789e492417",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Apply smoothing and override old curve in database\n",
+    "# swam.process_curves(type='smooth', method='MOPA', **processing_kwargs)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "361ba1ae-9447-450a-a385-dc60a4e27218",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Apply smoothing and save as new curve (new procset)\n",
+    "new_procset1 = 'smo'\n",
+    "swam.process_curves(procset= new_procset1,type='smooth', method='MOPA', **processing_kwargs)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "289762ef-8713-4221-9cb2-08b4675031e3",
+   "metadata": {},
+   "source": [
+    "5.2 Resampling"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3e79e158-c3b7-4008-a99c-c3693bf018bb",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# New frequency sampling\n",
+    "processing_kwargs = {'pmin':25, 'pmax':45, 'pn':30}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "74c010ba-842c-4c5c-8520-839af05e79d6",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Apply resampling and override old curve in database\n",
+    "# swam.process_curves(type='resample', method='MOPA', **processing_kwargs)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "215ac3a1-9160-4dd3-8eca-d367deef57da",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Apply resampling and save as new curve (new procset)\n",
+    "new_procset2 = 'res'\n",
+    "swam.process_curves(procset= new_procset2, type='resample', method='MOPA', **processing_kwargs)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "863e59cc-9c54-48c8-8888-82e38bc22811",
+   "metadata": {},
+   "source": [
+    "5.3 Filtering"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "d634039b-71a7-49ea-a004-30a8ecdad565",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Accepted frequeny value range\n",
+    "processing_kwargs = {'pmin':30, 'pmax':40, 'param':'frequency'}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3f13d9dd-5f24-4429-9243-2c143e4f1d18",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Accepted velocity value range\n",
+    "# processing_kwargs = {'pmin':100, 'pmax':300, 'param':'velocity'}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "71de46cd-0662-402d-8a56-41b0aa25e978",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Apply filtering and save as new curve (new procset)\n",
+    "new_procset3 = 'fil'\n",
+    "swam.process_curves(procset= new_procset3, type='filter', method='MOPA', **processing_kwargs)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9e25ff15-d0f1-4180-91c4-ca5c17e28375",
+   "metadata": {},
+   "source": [
+    "5.3 Estimate error"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "1db6e0fb-c863-4e0c-9330-eba249424c44",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Estimate error and save as new curve (new procset)\n",
+    "new_procset4 = 'err'\n",
+    "swam.process_curves(procset= new_procset4,type='estimate_error', method='MOPA')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "8a01f021-d534-4f6e-a93c-823413080536",
+   "metadata": {},
+   "source": [
+    "### 6. Plotting"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "dfd013a4-e200-484e-a67b-281de5179474",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from matplotlib.transforms import ScaledTranslation"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "6a467e7b-391e-4183-aee3-6f95e172a368",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "fig, ax = plt.subplot_mosaic([['a)'],['b)']])\n",
+    "\n",
+    "color = ['lightgrey','dodgerblue','red','k']\n",
+    "marker = ['s','o','o','o']\n",
+    "\n",
+    "for i,procset in enumerate(['proc1', new_procset1, new_procset2, new_procset3]):\n",
+    "    swam.plot_curves(apply_to = 'cur', procset= procset, method='MOPA',\n",
+    "                     color = color[i], axes = ax['a)'], \n",
+    "                     marker = marker[i], size = 60)\n",
+    "\n",
+    "swam.plot_curves(apply_to = 'cur', procset= new_procset4,\n",
+    "                 method='MOPA', color = 'k', axes = ax['b)'], showErr = True,\n",
+    "                 label='original', marker = 'o', size = 25, alpha = 1)\n",
+    "\n",
+    "for label, ax in ax.items():\n",
+    "\n",
+    "    ax.set_xlim([5, 60])\n",
+    "    ax.set_ylim([150, 1000])\n",
+    "\n",
+    "    if label in ['a)','b)']:\n",
+    "        ax.text(\n",
+    "            -0.075,0.93, label, transform=(\n",
+    "                ax.transAxes + ScaledTranslation(-20/72, +7/72, fig.dpi_scale_trans)),\n",
+    "                va='bottom')\n",
+    "\n",
+    "plt.tight_layout()"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "pyswapp",
+   "language": "python",
+   "name": "pyswapp"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.23"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

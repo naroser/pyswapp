@@ -1,0 +1,907 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyswapp.utils.sql &mdash; pySWApp 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            pySWApp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pySWApp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pySWApp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyswapp.utils.sql</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyswapp.utils.sql</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+
+<div class="viewcode-block" id="StdevFunc">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.StdevFunc">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">StdevFunc</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;SQLITE aggregate stdev.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">M</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="StdevFunc.step">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.StdevFunc.step">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">tM</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">M</span> <span class="o">+=</span> <span class="p">(</span><span class="n">value</span> <span class="o">-</span> <span class="n">tM</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="o">+=</span> <span class="p">(</span><span class="n">value</span> <span class="o">-</span> <span class="n">tM</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">value</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="StdevFunc.finalize">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.StdevFunc.finalize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span></div>
+</div>
+
+
+<div class="viewcode-block" id="SQL">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SQL</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle an SQLite database.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">database</span> <span class="o">=</span> <span class="n">database</span>
+
+    <span class="c1"># %% Connection</span>
+<div class="viewcode-block" id="SQL.get_connection">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.get_connection">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create database connection.&quot;&quot;&quot;</span>
+        <span class="n">con</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="p">)</span>
+        <span class="n">con</span><span class="o">.</span><span class="n">create_aggregate</span><span class="p">(</span><span class="s2">&quot;STDEV&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">StdevFunc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">con</span></div>
+
+
+<div class="viewcode-block" id="SQL.to_sql">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.to_sql">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_sql</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;fail&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write data stored in a DataFrame to a SQL database.&quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">con</span><span class="p">:</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="n">con</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="n">if_exists</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SQL.read_sql">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.read_sql">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_sql</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write SQL query or table into DataFrame.&quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">con</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span><span class="n">con</span><span class="o">=</span><span class="n">con</span><span class="p">)</span></div>
+
+
+    <span class="c1"># %% Table management</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">types</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a SQL table&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">types</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Number of column names and types do not match: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span><span class="si">}</span><span class="s2"> != </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">types</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">is_valid_identifier</span><span class="p">(</span><span class="n">identifier</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">identifier</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isalnum</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_valid_identifier</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid table name: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_valid_identifier</span><span class="p">(</span><span class="n">col</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid column name: </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Build column definitions</span>
+        <span class="n">column_defs</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">typ</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">typ</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">types</span><span class="p">))</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;CREATE TABLE </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">column_defs</span><span class="si">}</span><span class="s2">);&quot;</span>
+
+        <span class="c1"># Execute SQL</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">con</span><span class="p">:</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SQL.array_to_blob">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.array_to_blob">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">array_to_blob</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arr</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Serialize ndarray to BLOB.&quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">arr</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SQL.blob_to_array">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.blob_to_array">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">blob_to_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blob</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deserialize SQLite BLOB to numpy array.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">blob</span><span class="p">,</span> <span class="p">(</span><span class="nb">memoryview</span><span class="p">,</span> <span class="nb">bytearray</span><span class="p">)):</span>
+            <span class="n">blob</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">blob</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">blob</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize all database tables.&quot;&quot;&quot;</span>
+
+        <span class="c1"># amplitudes table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_table</span><span class="p">(</span><span class="s1">&#39;amplitudes&#39;</span><span class="p">,</span>
+                           <span class="p">[</span><span class="s1">&#39;procset&#39;</span><span class="p">,</span> <span class="s1">&#39;wid&#39;</span><span class="p">,</span> <span class="s1">&#39;sin&#39;</span><span class="p">,</span> <span class="s1">&#39;rep&#39;</span><span class="p">,</span> <span class="s1">&#39;npts&#39;</span><span class="p">,</span><span class="s1">&#39;dt&#39;</span><span class="p">,</span><span class="s1">&#39;delay&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;sampling_rate&#39;</span><span class="p">,</span><span class="s1">&#39;tapered_amps&#39;</span><span class="p">,</span><span class="s1">&#39;rin_data&#39;</span><span class="p">,</span> <span class="s1">&#39;amps_data&#39;</span><span class="p">],</span>
+                           <span class="p">[</span><span class="s1">&#39;TEXT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span><span class="s1">&#39;INT&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;FLOAT&#39;</span><span class="p">,</span><span class="s1">&#39;FLOAT&#39;</span><span class="p">,</span><span class="s1">&#39;FLOAT&#39;</span><span class="p">,</span><span class="s1">&#39;INT&#39;</span><span class="p">,</span><span class="s1">&#39;BLOB&#39;</span><span class="p">,</span> <span class="s1">&#39;BLOB&#39;</span><span class="p">])</span>
+
+        <span class="c1"># dispersive_energy table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_table</span><span class="p">(</span>
+            <span class="s1">&#39;dispersive_energy&#39;</span><span class="p">,</span>
+            <span class="p">[</span><span class="s1">&#39;procset&#39;</span><span class="p">,</span> <span class="s1">&#39;wid&#39;</span><span class="p">,</span> <span class="s1">&#39;sin&#39;</span><span class="p">,</span> <span class="s1">&#39;rep&#39;</span><span class="p">,</span> <span class="s1">&#39;method&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;wavenumber&#39;</span><span class="p">,</span> <span class="s1">&#39;f_id&#39;</span><span class="p">,</span> <span class="s1">&#39;f_value&#39;</span><span class="p">,</span> <span class="s1">&#39;re&#39;</span><span class="p">,</span> <span class="s1">&#39;im&#39;</span><span class="p">],</span>
+            <span class="p">[</span><span class="s1">&#39;TEXT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;TEXT&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;FLOAT&#39;</span><span class="p">,</span> <span class="s1">&#39;FLOAT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;FLOAT&#39;</span><span class="p">,</span> <span class="s1">&#39;FLOAT&#39;</span><span class="p">,</span> <span class="s1">&#39;FLOAT&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="c1"># phase_differences table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_table</span><span class="p">(</span><span class="s1">&#39;phase_differences&#39;</span><span class="p">,</span>
+                           <span class="p">[</span><span class="s1">&#39;procset&#39;</span><span class="p">,</span> <span class="s1">&#39;calc&#39;</span><span class="p">,</span> <span class="s1">&#39;sin&#39;</span><span class="p">,</span> <span class="s1">&#39;rep&#39;</span><span class="p">,</span> <span class="s1">&#39;wid&#39;</span><span class="p">,</span> <span class="s1">&#39;f_id&#39;</span><span class="p">,</span> <span class="s1">&#39;f_value&#39;</span><span class="p">,</span> <span class="s1">&#39;pd_data&#39;</span><span class="p">],</span>
+                           <span class="p">[</span><span class="s1">&#39;TEXT&#39;</span><span class="p">,</span> <span class="s1">&#39;TEXT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;BLOB&#39;</span><span class="p">,</span> <span class="s1">&#39;BLOB&#39;</span><span class="p">,</span> <span class="s1">&#39;BLOB&#39;</span><span class="p">])</span>
+
+        <span class="c1"># curve table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_table</span><span class="p">(</span><span class="s1">&#39;curves&#39;</span><span class="p">,</span>
+                           <span class="p">[</span><span class="s1">&#39;procset&#39;</span><span class="p">,</span> <span class="s1">&#39;wid&#39;</span><span class="p">,</span> <span class="s1">&#39;sin&#39;</span><span class="p">,</span> <span class="s1">&#39;rep&#39;</span><span class="p">,</span> <span class="s1">&#39;xmid&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;method&#39;</span><span class="p">,</span> <span class="s1">&#39;dc_mode&#39;</span><span class="p">,</span> <span class="s1">&#39;frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">],</span>
+                           <span class="p">[</span><span class="s1">&#39;TEXT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;FLOAT&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;TEXT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;FLOAT&#39;</span><span class="p">,</span> <span class="s1">&#39;FLOAT&#39;</span><span class="p">,</span> <span class="s1">&#39;FLOAT&#39;</span><span class="p">])</span>
+
+        <span class="c1"># filter table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_table</span><span class="p">(</span><span class="s1">&#39;filter&#39;</span><span class="p">,</span>
+                           <span class="p">[</span><span class="s1">&#39;procset&#39;</span><span class="p">,</span> <span class="s1">&#39;wid&#39;</span><span class="p">,</span> <span class="s1">&#39;sin&#39;</span><span class="p">,</span> <span class="s1">&#39;rep&#39;</span><span class="p">,</span><span class="s1">&#39;key&#39;</span><span class="p">,</span><span class="s1">&#39;x_value&#39;</span><span class="p">,</span><span class="s1">&#39;y_value&#39;</span><span class="p">,</span><span class="s1">&#39;type&#39;</span><span class="p">],</span>
+                           <span class="p">[</span><span class="s1">&#39;TEXT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;TEXT&#39;</span><span class="p">,</span> <span class="s1">&#39;FLOAT&#39;</span><span class="p">,</span> <span class="s1">&#39;FLOAT&#39;</span><span class="p">,</span> <span class="s1">&#39;TEXT&#39;</span><span class="p">])</span>
+
+<div class="viewcode-block" id="SQL.get_table">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.get_table">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a table form the database as DataFrame.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;SELECT * FROM </span><span class="si">%s</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SQL.drop_table">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.drop_table">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">drop_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Drop table.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">con</span><span class="p">:</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;DROP TABLE IF EXISTS </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SQL.show_tables">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.show_tables">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print all table names in the database.&quot;&quot;&quot;</span>
+        <span class="n">tables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tables</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Tables in project: &quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tables</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="SQL.check_data">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.check_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if entry exists already in database.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">table</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tables</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span><span class="o">.</span><span class="n">empty</span>
+
+        <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;SELECT procset, sin, rep</span>
+<span class="s2">                  FROM </span><span class="si">%s</span>
+<span class="s2">                  WHERE &quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">table</span>
+
+        <span class="n">npar</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">npar</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">sql</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">==</span><span class="si">{</span><span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2"> AND &quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sql</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">==</span><span class="si">{</span><span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span></div>
+
+
+<div class="viewcode-block" id="SQL.delete_data">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.delete_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete entry from database.&quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">con</span><span class="p">:</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;DELETE FROM </span><span class="si">%s</span><span class="s2"> WHERE &quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">table</span>
+                <span class="n">npar</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                    <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">npar</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">sql</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">==</span><span class="si">{</span><span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2"> AND &quot;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">sql</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">==</span><span class="si">{</span><span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">con</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+
+            <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">OperationalError</span><span class="p">:</span>
+                <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="SQL.get_tables">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.get_tables">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all table names.&quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_connection</span><span class="p">()</span> <span class="k">as</span> <span class="n">con</span><span class="p">:</span>
+            <span class="n">table_names</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT name FROM sqlite_master WHERE type=&#39;table&#39;;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+            <span class="n">table_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">table_names</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">table_list</span></div>
+
+
+    <span class="c1"># %% geometry information</span>
+<div class="viewcode-block" id="SQL.read_geometry">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.read_geometry">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry_file</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read geometry CSV file and populate geometry, shots, and receivers tables.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Read geometry file</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">geometry_file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;geophone&#39;</span><span class="p">,</span> <span class="s1">&#39;shots&#39;</span><span class="p">,</span> <span class="s1">&#39;first_geophone&#39;</span><span class="p">,</span> <span class="s1">&#39;num_geophones&#39;</span><span class="p">])</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">astype</span><span class="p">({</span><span class="s1">&#39;shots&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;first_geophone&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;num_geophones&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">})</span>
+        <span class="n">geom</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;station_id&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">geom</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Shots DataFrame</span>
+        <span class="n">shots</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">geom</span><span class="o">.</span><span class="n">shots</span> <span class="o">!=</span> <span class="s1">&#39;-1&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;station_id&#39;</span><span class="p">,</span> <span class="s1">&#39;shots&#39;</span><span class="p">]])</span>
+        <span class="n">shots</span><span class="p">[</span><span class="s1">&#39;shots&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shots</span><span class="p">[</span><span class="s1">&#39;shots&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
+        <span class="n">shots</span> <span class="o">=</span> <span class="n">shots</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="s1">&#39;shots&#39;</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_append_shots_df</span><span class="p">(</span><span class="n">shots_df</span><span class="p">,</span> <span class="n">geom_df</span><span class="p">,</span> <span class="n">col_name</span><span class="p">):</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">geom_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">geom_df</span><span class="o">.</span><span class="n">shots</span> <span class="o">!=</span> <span class="s1">&#39;-1&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">col_name</span><span class="p">]])</span>
+            <span class="n">tmp</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="n">col_name</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">shots_df</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
+            <span class="k">return</span> <span class="n">shots_df</span>
+
+        <span class="n">shots</span> <span class="o">=</span> <span class="n">_append_shots_df</span><span class="p">(</span><span class="n">shots</span><span class="p">,</span> <span class="n">geom</span><span class="p">,</span> <span class="s1">&#39;first_geophone&#39;</span><span class="p">)</span>
+        <span class="n">shots</span> <span class="o">=</span> <span class="n">_append_shots_df</span><span class="p">(</span><span class="n">shots</span><span class="p">,</span> <span class="n">geom</span><span class="p">,</span> <span class="s1">&#39;num_geophones&#39;</span><span class="p">)</span>
+
+        <span class="n">shots</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;rep&#39;</span><span class="p">,</span> <span class="n">shots</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;station_id&#39;</span><span class="p">,</span> <span class="s1">&#39;first_geophone&#39;</span><span class="p">,</span> <span class="s1">&#39;num_geophones&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">cumcount</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">shots</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;sin&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">shots</span><span class="o">.</span><span class="n">rep</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">cumsum</span><span class="p">())</span>
+
+        <span class="c1"># Geophone indices (receivers)</span>
+        <span class="n">recs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">geom</span><span class="p">[</span><span class="n">geom</span><span class="o">.</span><span class="n">geophone</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">][</span><span class="s1">&#39;station_id&#39;</span><span class="p">])</span>
+        <span class="n">recs</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;rin&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">recs</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">recs</span> <span class="o">=</span> <span class="n">recs</span><span class="o">.</span><span class="n">astype</span><span class="p">({</span><span class="s1">&#39;rin&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;station_id&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">})</span>
+
+        <span class="c1"># Create tables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_table</span><span class="p">(</span><span class="s1">&#39;geometry&#39;</span><span class="p">,</span>
+                           <span class="p">[</span><span class="s1">&#39;station_id&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;geophone&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;shots&#39;</span><span class="p">,</span> <span class="s1">&#39;first_geophone&#39;</span><span class="p">,</span> <span class="s1">&#39;num_geophones&#39;</span><span class="p">],</span>
+                           <span class="p">[</span><span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;FLOAT&#39;</span><span class="p">,</span> <span class="s1">&#39;FLOAT&#39;</span><span class="p">,</span> <span class="s1">&#39;FLOAT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_table</span><span class="p">(</span><span class="s1">&#39;shots&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;station_id&#39;</span><span class="p">,</span> <span class="s1">&#39;sin&#39;</span><span class="p">,</span> <span class="s1">&#39;rep&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;shots&#39;</span><span class="p">,</span> <span class="s1">&#39;first_geophone&#39;</span><span class="p">,</span> <span class="s1">&#39;num_geophones&#39;</span><span class="p">],</span>
+                           <span class="p">[</span><span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_table</span><span class="p">(</span><span class="s1">&#39;receivers&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;rin&#39;</span><span class="p">,</span> <span class="s1">&#39;station_id&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;INT&#39;</span><span class="p">,</span> <span class="s1">&#39;INT&#39;</span><span class="p">])</span>
+
+        <span class="c1"># write to database</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="s1">&#39;geometry&#39;</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="n">shots</span><span class="p">,</span> <span class="s1">&#39;shots&#39;</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="n">recs</span><span class="p">,</span> <span class="s1">&#39;receivers&#39;</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># create all tables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_tables</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SQL.get_geometry">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.get_geometry">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">rep</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return source/receiver coordinates for one source location and shot index.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">sin</span> <span class="o">!=</span> <span class="s1">&#39;*&#39;</span><span class="p">:</span>
+            <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;SELECT s.sin, s.rep, s.first_geophone fg, s.num_geophones ng, </span>
+<span class="s2">                      g.x sx, g.y sy, g.z sz</span>
+<span class="s2">                      FROM geometry g</span>
+<span class="s2">                      INNER JOIN shots s ON s.station_id == g.station_id</span>
+<span class="s2">                      WHERE s.rep==</span><span class="si">{</span><span class="n">rep</span><span class="si">}</span><span class="s2"> AND s.sin==</span><span class="si">{</span><span class="n">sin</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
+            <span class="n">sht</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sht</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Number of shots should be 1.&#39;</span><span class="p">)</span>
+
+            <span class="n">rec</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;rin&#39;</span><span class="p">,</span> <span class="s1">&#39;rx&#39;</span><span class="p">,</span> <span class="s1">&#39;ry&#39;</span><span class="p">,</span> <span class="s1">&#39;rz&#39;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">rin</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sht</span><span class="o">.</span><span class="n">fg</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="n">sht</span><span class="o">.</span><span class="n">fg</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">+</span> <span class="n">sht</span><span class="o">.</span><span class="n">ng</span><span class="o">.</span><span class="n">item</span><span class="p">()):</span>
+                <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;SELECT r.rin, g.x rx, g.y ry, g.z rz</span>
+<span class="s2">                          FROM geometry g</span>
+<span class="s2">                          INNER JOIN receivers r ON r.station_id == g.station_id</span>
+<span class="s2">                          WHERE r.rin==</span><span class="si">{</span><span class="n">rin</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
+                <span class="n">rec</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">rec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)])</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Return all</span>
+            <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;SELECT s.sin, s.rep, s.first_geophone fg, s.num_geophones ng, g.x sx, g.y sy, g.z sz</span>
+<span class="s2">                     FROM geometry g</span>
+<span class="s2">                     INNER JOIN shots s ON s.station_id == g.station_id&quot;&quot;&quot;</span>
+            <span class="n">sht</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+            <span class="n">rec</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;rin&#39;</span><span class="p">,</span> <span class="s1">&#39;rx&#39;</span><span class="p">,</span> <span class="s1">&#39;ry&#39;</span><span class="p">,</span> <span class="s1">&#39;rz&#39;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sht</span><span class="p">)):</span>
+                <span class="k">for</span> <span class="n">rin</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sht</span><span class="o">.</span><span class="n">fg</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">sht</span><span class="o">.</span><span class="n">fg</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">sht</span><span class="o">.</span><span class="n">ng</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">j</span><span class="p">]):</span>
+                    <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;SELECT r.rin, g.x rx, g.y ry, g.z rz</span>
+<span class="s2">                              FROM geometry g</span>
+<span class="s2">                              INNER JOIN receivers r ON r.station_id == g.station_id</span>
+<span class="s2">                              WHERE r.rin==</span><span class="si">{</span><span class="n">rin</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
+                    <span class="n">rec</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">rec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)])</span>
+            <span class="n">rec</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">sht</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">rec</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SQL.get_shotfile">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.get_shotfile">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_shotfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">rep</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the name of one shot file&quot;&quot;&quot;</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;SELECT s.shots</span>
+<span class="s2">                  FROM shots s</span>
+<span class="s2">                  WHERE s.rep==</span><span class="si">{</span><span class="n">rep</span><span class="si">}</span><span class="s2"> AND s.sin==</span><span class="si">{</span><span class="n">sin</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span></div>
+
+
+    <span class="c1"># %% Interaction with settings</span>
+<div class="viewcode-block" id="SQL.read_setting">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.read_setting">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read settings and add to database&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="s1">&#39;settings&#39;</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SQL.get_settings">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.get_settings">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the settings DataFrame&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_table</span><span class="p">(</span><span class="s1">&#39;settings&#39;</span><span class="p">)</span></div>
+
+
+    <span class="c1"># %% Interact with seismic data</span>
+<div class="viewcode-block" id="SQL.get_proc_labels">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.get_proc_labels">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_proc_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;SELECT DISTINCT procset</span>
+<span class="s2">                 FROM amplitudes&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)[</span><span class="s1">&#39;procset&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span></div>
+
+
+<div class="viewcode-block" id="SQL.get_trafo_labels">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.get_trafo_labels">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_trafo_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">procset</span><span class="p">,</span> <span class="n">use_windows</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="s1">&#39;dispersive_energy&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tables</span><span class="p">():</span>
+
+            <span class="k">if</span> <span class="n">use_windows</span><span class="p">:</span>
+                <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;SELECT DISTINCT method</span>
+<span class="s2">                         FROM dispersive_energy WHERE procset==&#39;</span><span class="si">%s</span><span class="s2">&#39; AND wid != -1&quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">procset</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;SELECT DISTINCT method</span>
+<span class="s2">                         FROM dispersive_energy WHERE procset==&#39;</span><span class="si">%s</span><span class="s2">&#39; AND wid == -1&quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">procset</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="k">return</span> <span class="n">labels</span>
+
+        <span class="k">return</span> <span class="p">[]</span></div>
+
+
+<div class="viewcode-block" id="SQL.duplicate_data">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.duplicate_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">duplicate_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">rep</span><span class="p">,</span> <span class="n">wid</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sin&#39;</span><span class="p">:</span> <span class="n">sin</span><span class="p">,</span> <span class="s1">&#39;rep&#39;</span><span class="p">:</span> <span class="n">rep</span><span class="p">,</span> <span class="s1">&#39;procset&#39;</span><span class="p">:</span> <span class="s2">&quot;&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="s1">&#39;tmp&#39;</span><span class="p">,</span> <span class="s1">&#39;wid&#39;</span><span class="p">:</span> <span class="n">wid</span><span class="p">}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_data</span><span class="p">(</span><span class="s1">&#39;amplitudes&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delete_data</span><span class="p">(</span><span class="s1">&#39;amplitudes&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">rep</span><span class="p">,</span> <span class="s1">&#39;tmp&#39;</span><span class="p">,</span> <span class="n">wid</span><span class="o">=</span><span class="n">wid</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SQL.write_data">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.write_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">rep</span><span class="p">,</span> <span class="n">procset</span><span class="p">,</span> <span class="n">wid</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write amplitude data in TX domain to SQL table &#39;amplitudes&#39;.&quot;&quot;&quot;</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">rec_geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_geometry</span><span class="p">(</span><span class="n">sin</span><span class="p">,</span> <span class="n">rep</span><span class="p">)</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">data</span>
+
+        <span class="n">amps_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_to_blob</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">st2amps</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+        <span class="n">rin</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;rx&#39;</span><span class="p">:</span> <span class="n">stream</span><span class="o">.</span><span class="n">receiver</span><span class="p">})</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">rec_geom</span><span class="p">[[</span><span class="s1">&#39;rx&#39;</span><span class="p">,</span> <span class="s1">&#39;rin&#39;</span><span class="p">]],</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;rx&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)[</span><span class="s1">&#39;rin&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">rin_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_to_blob</span><span class="p">(</span><span class="n">rin</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([{</span>
+            <span class="s1">&#39;procset&#39;</span><span class="p">:</span> <span class="n">procset</span><span class="p">,</span>
+            <span class="s1">&#39;wid&#39;</span><span class="p">:</span> <span class="n">wid</span><span class="p">,</span>
+            <span class="s1">&#39;sin&#39;</span><span class="p">:</span> <span class="n">sin</span><span class="p">,</span>
+            <span class="s1">&#39;rep&#39;</span><span class="p">:</span> <span class="n">rep</span><span class="p">,</span>
+            <span class="s1">&#39;npts&#39;</span><span class="p">:</span> <span class="n">stream</span><span class="o">.</span><span class="n">npts</span><span class="p">,</span>
+            <span class="s1">&#39;dt&#39;</span><span class="p">:</span> <span class="n">stream</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span>
+            <span class="s1">&#39;delay&#39;</span><span class="p">:</span> <span class="n">stream</span><span class="o">.</span><span class="n">delay</span><span class="p">,</span>
+            <span class="s1">&#39;sampling_rate&#39;</span><span class="p">:</span> <span class="n">stream</span><span class="o">.</span><span class="n">sampling_rate</span><span class="p">,</span>
+            <span class="s1">&#39;tapered_amps&#39;</span><span class="p">:</span> <span class="n">stream</span><span class="o">.</span><span class="n">tapered_amps</span><span class="p">,</span>
+            <span class="s1">&#39;rin_data&#39;</span><span class="p">:</span> <span class="n">rin_data</span><span class="p">,</span>
+            <span class="s1">&#39;amps_data&#39;</span><span class="p">:</span> <span class="n">amps_data</span>
+        <span class="p">}])</span>
+
+        <span class="c1"># delete previous entry</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sin&#39;</span><span class="p">:</span> <span class="n">sin</span><span class="p">,</span> <span class="s1">&#39;rep&#39;</span><span class="p">:</span> <span class="n">rep</span><span class="p">,</span> <span class="s1">&#39;procset&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">procset</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="s1">&#39;wid&#39;</span><span class="p">:</span> <span class="n">wid</span><span class="p">}</span>
+        <span class="n">rows_exist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_data</span><span class="p">(</span><span class="s1">&#39;amplitudes&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">rows_exist</span> <span class="ow">and</span> <span class="n">procset</span> <span class="o">!=</span> <span class="s1">&#39;raw&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delete_data</span><span class="p">(</span><span class="s1">&#39;amplitudes&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;amplitudes&#39;</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;append&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SQL.read_data">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.read_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">rep</span><span class="p">,</span> <span class="n">procset</span><span class="o">=</span><span class="s1">&#39;proc1&#39;</span><span class="p">,</span> <span class="n">wid</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read amplitude data from table &#39;amplitudes&#39;.&quot;&quot;&quot;</span>
+
+        <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            SELECT *</span>
+<span class="s2">            FROM amplitudes</span>
+<span class="s2">            WHERE procset==&#39;</span><span class="si">{</span><span class="n">procset</span><span class="si">}</span><span class="s2">&#39;</span>
+<span class="s2">              AND wid==</span><span class="si">{</span><span class="n">wid</span><span class="si">}</span>
+<span class="s2">              AND sin==</span><span class="si">{</span><span class="n">sin</span><span class="si">}</span>
+<span class="s2">              AND rep==</span><span class="si">{</span><span class="n">rep</span><span class="si">}</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="n">rin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">blob_to_array</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">rin_data</span><span class="p">)</span>
+        <span class="n">amps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">blob_to_array</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">amps_data</span><span class="p">)</span>
+
+        <span class="n">rin_list</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">rin</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
+
+        <span class="n">sql_recs</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            SELECT r.rin, g.x rx, g.y ry, g.z rz</span>
+<span class="s2">            FROM geometry g</span>
+<span class="s2">            INNER JOIN receivers r ON r.station_id = g.station_id</span>
+<span class="s2">            WHERE r.rin IN (</span><span class="si">{</span><span class="n">rin_list</span><span class="si">}</span><span class="s2">)</span>
+<span class="s2">            ORDER BY r.rin ASC</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="n">recs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql_recs</span><span class="p">)</span>
+
+        <span class="n">sql_sht</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            SELECT s.sin, s.rep, s.first_geophone fg, s.num_geophones ng,</span>
+<span class="s2">                   g.x sx, g.y sy, g.z sz</span>
+<span class="s2">            FROM geometry g</span>
+<span class="s2">            INNER JOIN shots s ON s.station_id = g.station_id</span>
+<span class="s2">            WHERE s.rep==</span><span class="si">{</span><span class="n">rep</span><span class="si">}</span><span class="s2"> AND s.sin==</span><span class="si">{</span><span class="n">sin</span><span class="si">}</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="n">sht</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql_sht</span><span class="p">)</span>
+
+        <span class="n">par</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s1">&#39;npts&#39;</span><span class="p">,</span> <span class="s1">&#39;dt&#39;</span><span class="p">,</span> <span class="s1">&#39;delay&#39;</span><span class="p">,</span> <span class="s1">&#39;sampling_rate&#39;</span><span class="p">,</span> <span class="s1">&#39;tapered_amps&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[[</span><span class="mi">0</span><span class="p">]]</span>
+
+        <span class="k">return</span> <span class="n">par</span><span class="p">,</span> <span class="n">amps</span><span class="p">,</span> <span class="n">recs</span><span class="p">,</span> <span class="n">sht</span></div>
+
+
+    <span class="c1"># %% FV data</span>
+<div class="viewcode-block" id="SQL.write_FV">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.write_FV">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_FV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">rep</span><span class="p">,</span> <span class="n">procset</span><span class="o">=</span><span class="s1">&#39;proc1&#39;</span><span class="p">,</span> <span class="n">wid</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;write dispersive energy data to SQL table &#39;dispersive_energy&#39;&quot;&quot;&quot;</span>
+
+        <span class="n">cur_stream</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="n">FV</span> <span class="o">=</span> <span class="n">cur_stream</span><span class="o">.</span><span class="n">dispersive_energy</span>  <span class="c1"># FV spectrum (vels, freq)</span>
+        <span class="n">freq</span> <span class="o">=</span> <span class="n">cur_stream</span><span class="o">.</span><span class="n">frequency</span>  <span class="c1"># frequency range</span>
+        <span class="n">cur_vel</span> <span class="o">=</span> <span class="n">cur_stream</span><span class="o">.</span><span class="n">velocity</span>  <span class="c1"># testing phase velocity</span>
+        <span class="n">cur_ks</span> <span class="o">=</span> <span class="n">cur_stream</span><span class="o">.</span><span class="n">wavenumber</span>  <span class="c1"># wavenumber</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="n">cur_stream</span><span class="o">.</span><span class="n">trafo_type</span>
+
+        <span class="n">n_vel</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cur_vel</span><span class="p">)</span>
+        <span class="n">n_freq</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span>
+
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_vel</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_freq</span><span class="p">):</span>
+                <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s1">&#39;procset&#39;</span><span class="p">:</span> <span class="n">procset</span><span class="p">,</span>
+                    <span class="s1">&#39;wid&#39;</span><span class="p">:</span> <span class="n">wid</span><span class="p">,</span>
+                    <span class="s1">&#39;sin&#39;</span><span class="p">:</span> <span class="n">sin</span><span class="p">,</span>
+                    <span class="s1">&#39;rep&#39;</span><span class="p">:</span> <span class="n">rep</span><span class="p">,</span>
+                    <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span>
+                    <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">cur_vel</span><span class="p">[</span><span class="n">v</span><span class="p">]),</span>
+                    <span class="s1">&#39;wavenumber&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">cur_ks</span><span class="p">[</span><span class="n">v</span><span class="p">]),</span>
+                    <span class="s1">&#39;f_id&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="p">),</span>
+                    <span class="s1">&#39;f_value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">freq</span><span class="p">[</span><span class="n">f</span><span class="p">]),</span>
+                    <span class="s1">&#39;re&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">FV</span><span class="p">[</span><span class="n">v</span><span class="p">,</span> <span class="n">f</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="p">),</span>
+                    <span class="s1">&#39;im&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">FV</span><span class="p">[</span><span class="n">v</span><span class="p">,</span> <span class="n">f</span><span class="p">]</span><span class="o">.</span><span class="n">imag</span><span class="p">),</span>
+                <span class="p">})</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sin&#39;</span><span class="p">:</span> <span class="n">sin</span><span class="p">,</span> <span class="s1">&#39;rep&#39;</span><span class="p">:</span> <span class="n">rep</span><span class="p">,</span> <span class="s1">&#39;procset&#39;</span><span class="p">:</span> <span class="s2">&quot;&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">procset</span><span class="p">,</span> <span class="s1">&#39;wid&#39;</span><span class="p">:</span> <span class="n">wid</span><span class="p">,</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s2">&quot;&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">method</span><span class="p">}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_data</span><span class="p">(</span><span class="s1">&#39;dispersive_energy&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delete_data</span><span class="p">(</span><span class="s1">&#39;dispersive_energy&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;dispersive_energy&#39;</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;append&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SQL.read_FV">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.read_FV">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_FV</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">rep</span><span class="p">,</span> <span class="n">procset</span><span class="o">=</span><span class="s1">&#39;proc1&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;phaseshift&#39;</span><span class="p">,</span> <span class="n">wid</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;read dispersive energy data from SQL table &#39;dispersive_energy&#39;&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="s1">&#39;dispersive_energy&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tables</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                    SELECT * FROM dispersive_energy</span>
+<span class="s2">                    WHERE procset=&#39;</span><span class="si">{</span><span class="n">procset</span><span class="si">}</span><span class="s2">&#39;</span>
+<span class="s2">                      AND wid=</span><span class="si">{</span><span class="n">wid</span><span class="si">}</span>
+<span class="s2">                      AND sin=</span><span class="si">{</span><span class="n">sin</span><span class="si">}</span>
+<span class="s2">                      AND rep=</span><span class="si">{</span><span class="n">rep</span><span class="si">}</span>
+<span class="s2">                      AND method=&#39;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&#39;</span>
+<span class="s2">                    ORDER BY velocity, f_id</span>
+<span class="s2">                &quot;&quot;&quot;</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="n">velocities</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+        <span class="n">freq_vals</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;f_value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+        <span class="n">n_vel</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">velocities</span><span class="p">)</span>
+        <span class="n">n_freq</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">freq_vals</span><span class="p">)</span>
+
+        <span class="c1"># Reconstruct FV matrix</span>
+        <span class="n">FV</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_vel</span><span class="p">,</span> <span class="n">n_freq</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">v_idx</span><span class="p">,</span> <span class="n">vel</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">velocities</span><span class="p">):</span>
+            <span class="n">block</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">velocity</span> <span class="o">==</span> <span class="n">vel</span><span class="p">]</span>
+            <span class="n">block</span> <span class="o">=</span> <span class="n">block</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;f_id&#39;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">FV</span><span class="p">[</span><span class="n">v_idx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">block</span><span class="p">[</span><span class="s1">&#39;re&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">block</span><span class="p">[</span><span class="s1">&#39;im&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="n">FV</span><span class="p">[</span><span class="n">v_idx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">block</span><span class="p">[</span><span class="s1">&#39;re&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+        <span class="n">wavenumbers</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">)[</span><span class="s1">&#39;wavenumber&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">first</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
+
+        <span class="k">return</span> <span class="n">velocities</span><span class="p">,</span> <span class="n">wavenumbers</span><span class="p">,</span> <span class="n">freq_vals</span><span class="p">,</span> <span class="n">FV</span></div>
+
+
+<div class="viewcode-block" id="SQL.wids_exist">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.wids_exist">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wids_exist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">procset</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;check if windows exist&quot;&quot;&quot;</span>
+
+        <span class="n">sql</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;&quot;&quot;SELECT DISTINCT wid</span>
+<span class="s2">                 FROM amplitudes</span>
+<span class="s2">                 WHERE procset==&#39;</span><span class="si">%s</span><span class="s2">&#39;AND wid!=-1&quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">procset</span><span class="p">)</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span> <span class="k">else</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="SQL.get_wids">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.get_wids">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_wids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">rep</span><span class="p">,</span> <span class="n">procset</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;return the window ids for a sin/rep pair&quot;&quot;&quot;</span>
+
+        <span class="n">sql</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;&quot;&quot;SELECT DISTINCT wid</span>
+<span class="s2">                 FROM amplitudes</span>
+<span class="s2">                 WHERE procset==&#39;</span><span class="si">%s</span><span class="s2">&#39; AND sin==</span><span class="si">%d</span><span class="s2"> AND rep==</span><span class="si">%d</span><span class="s2"> AND wid!=-1&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">procset</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">rep</span><span class="p">))</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;wid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span> <span class="k">else</span> <span class="p">[]</span></div>
+
+
+<div class="viewcode-block" id="SQL.write_pd">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.write_pd">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_pd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fids</span><span class="p">,</span> <span class="n">freq</span><span class="p">,</span> <span class="n">pd_data</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">rep</span><span class="p">,</span> <span class="n">procset</span><span class="o">=</span><span class="s1">&#39;proc1&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write phase-difference data to SQL table &#39;phase_differences&#39;.&quot;&quot;&quot;</span>
+
+        <span class="n">row</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([{</span>
+            <span class="s2">&quot;procset&quot;</span><span class="p">:</span> <span class="n">procset</span><span class="p">,</span>
+            <span class="s2">&quot;calc&quot;</span><span class="p">:</span> <span class="s2">&quot;NONE&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sin&quot;</span><span class="p">:</span> <span class="n">sin</span><span class="p">,</span>
+            <span class="s2">&quot;rep&quot;</span><span class="p">:</span> <span class="n">rep</span><span class="p">,</span>
+            <span class="s2">&quot;wid&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;f_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_to_blob</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">fids</span><span class="p">)),</span>
+            <span class="s2">&quot;f_value&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_to_blob</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">freq</span><span class="p">)),</span>
+            <span class="s2">&quot;pd_data&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_to_blob</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">pd_data</span><span class="p">))</span>
+        <span class="p">}])</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;sin&quot;</span><span class="p">:</span> <span class="n">sin</span><span class="p">,</span>
+            <span class="s2">&quot;rep&quot;</span><span class="p">:</span> <span class="n">rep</span><span class="p">,</span>
+            <span class="s2">&quot;procset&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">procset</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;wid&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;calc&quot;</span><span class="p">:</span> <span class="s2">&quot;&#39;NONE&#39;&quot;</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_data</span><span class="p">(</span><span class="s2">&quot;phase_differences&quot;</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delete_data</span><span class="p">(</span><span class="s2">&quot;phase_differences&quot;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;phase_differences&quot;</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s2">&quot;append&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SQL.group_pd">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.group_pd">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">group_pd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">procset</span><span class="o">=</span><span class="s1">&#39;proc1&#39;</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s1">&#39;AVG&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Group repeated measurements for a given sin. &quot;&quot;&quot;</span>
+
+        <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            SELECT procset, calc, sin, rep, wid, f_id, f_value, pd_data</span>
+<span class="s2">            FROM phase_differences</span>
+<span class="s2">            WHERE procset = &#39;</span><span class="si">{</span><span class="n">procset</span><span class="si">}</span><span class="s2">&#39; AND sin = </span><span class="si">{</span><span class="n">sin</span><span class="si">}</span><span class="s2"> AND calc = &#39;NONE&#39;</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+        <span class="c1"># Convert BLOBs → arrays</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;fids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;f_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blob_to_array</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;freq&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;f_value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blob_to_array</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;pd&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;pd_data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blob_to_array</span><span class="p">)</span>
+
+        <span class="n">fids</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;fids&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">freq</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;freq&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Stack repeated pd arrays</span>
+        <span class="n">stacked_pd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;pd&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">(),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">by</span> <span class="o">==</span> <span class="s2">&quot;AVG&quot;</span><span class="p">:</span>
+            <span class="n">agg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">stacked_pd</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">by</span> <span class="o">==</span> <span class="s2">&quot;STDEV&quot;</span><span class="p">:</span>
+            <span class="n">agg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">(</span><span class="n">stacked_pd</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported aggregation: </span><span class="si">{</span><span class="n">by</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">row</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([{</span>
+            <span class="s2">&quot;procset&quot;</span><span class="p">:</span> <span class="n">procset</span><span class="p">,</span>
+            <span class="s2">&quot;calc&quot;</span><span class="p">:</span> <span class="n">by</span><span class="p">,</span>
+            <span class="s2">&quot;sin&quot;</span><span class="p">:</span> <span class="n">sin</span><span class="p">,</span>
+            <span class="s2">&quot;rep&quot;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;rep&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;wid&quot;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;wid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;f_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_to_blob</span><span class="p">(</span><span class="n">fids</span><span class="p">),</span>
+            <span class="s2">&quot;f_value&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_to_blob</span><span class="p">(</span><span class="n">freq</span><span class="p">),</span>
+            <span class="s2">&quot;pd_data&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_to_blob</span><span class="p">(</span><span class="n">agg</span><span class="p">)</span>
+        <span class="p">}])</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;sin&quot;</span><span class="p">:</span> <span class="n">sin</span><span class="p">,</span>
+            <span class="s2">&quot;procset&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">procset</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;wid&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;calc&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">by</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_data</span><span class="p">(</span><span class="s2">&quot;phase_differences&quot;</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delete_data</span><span class="p">(</span><span class="s2">&quot;phase_differences&quot;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;phase_differences&#39;</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s2">&quot;append&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">row</span></div>
+
+
+<div class="viewcode-block" id="SQL.read_pd">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.read_pd">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_pd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">procset</span><span class="o">=</span><span class="s1">&#39;proc1&#39;</span><span class="p">,</span> <span class="n">calc</span><span class="o">=</span><span class="s1">&#39;NONE&#39;</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read phase-difference data from SQL table &#39;phase_differences&#39;.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+
+        <span class="n">sql</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;SELECT </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">                 FROM phase_differences</span>
+<span class="s2">                 WHERE procset==&#39;%s&#39;AND sin==%d AND calc==&#39;%s&#39;&quot;&quot;&quot;</span>
+               <span class="o">%</span> <span class="p">(</span><span class="n">procset</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">calc</span><span class="p">))</span>
+
+        <span class="n">blob_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">blob_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">blob_to_array</span><span class="p">(</span><span class="n">blob_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pd_data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SQL.read_f_from_pd">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.read_f_from_pd">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_f_from_pd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">procset</span><span class="o">=</span><span class="s1">&#39;proc1&#39;</span><span class="p">,</span> <span class="n">calc</span><span class="o">=</span><span class="s1">&#39;NONE&#39;</span><span class="p">):</span>
+
+        <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            SELECT f_value</span>
+<span class="s2">            FROM phase_differences</span>
+<span class="s2">            WHERE procset=&#39;</span><span class="si">{</span><span class="n">procset</span><span class="si">}</span><span class="s2">&#39; AND calc=&#39;</span><span class="si">{</span><span class="n">calc</span><span class="si">}</span><span class="s2">&#39;</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+        <span class="n">freq_arrays</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">blob_to_array</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;f_value&quot;</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">freq_arrays</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="SQL.write_curve">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.write_curve">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_curve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">rep</span><span class="p">,</span> <span class="n">procset</span><span class="o">=</span><span class="s1">&#39;proc1&#39;</span><span class="p">,</span> <span class="n">wid</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">xmid</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write dispersion curve data to SQL table &#39;curves&#39;.&quot;&quot;&quot;</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;procset&#39;</span><span class="p">:</span><span class="n">procset</span><span class="p">,</span>
+                            <span class="s1">&#39;wid&#39;</span><span class="p">:</span> <span class="n">wid</span><span class="p">,</span>
+                            <span class="s1">&#39;sin&#39;</span><span class="p">:</span> <span class="n">sin</span><span class="p">,</span>
+                            <span class="s1">&#39;rep&#39;</span><span class="p">:</span> <span class="n">rep</span><span class="p">,</span>
+                            <span class="s1">&#39;xmid&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;xmid&#39;</span><span class="p">],</span>
+                            <span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">],</span>
+                            <span class="s1">&#39;dc_mode&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;dc_mode&#39;</span><span class="p">],</span>
+                            <span class="s1">&#39;frequency&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">],</span>
+                            <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">],</span>
+                            <span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]})</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;procset&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">procset</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dc_mode&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;dc_mode&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sin&quot;</span><span class="p">:</span> <span class="n">sin</span><span class="p">,</span>
+            <span class="s2">&quot;rep&quot;</span><span class="p">:</span> <span class="n">rep</span><span class="p">,</span>
+            <span class="s2">&quot;wid&quot;</span><span class="p">:</span> <span class="n">wid</span><span class="p">,</span>
+            <span class="s2">&quot;xmid&quot;</span><span class="p">:</span> <span class="n">xmid</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_data</span><span class="p">(</span><span class="s2">&quot;curves&quot;</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delete_data</span><span class="p">(</span><span class="s2">&quot;curves&quot;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;curves&quot;</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s2">&quot;append&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SQL.read_curve">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.read_curve">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_curve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write dispersion curve data from SQL table &#39;curves&#39;.&quot;&quot;&quot;</span>
+
+        <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;SELECT </span><span class="si">{</span><span class="n">cols</span><span class="si">}</span><span class="s2"> FROM curves WHERE &quot;</span>
+        <span class="n">sql</span> <span class="o">+=</span> <span class="s2">&quot; AND &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">==</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+
+        <span class="n">curve</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">curve</span></div>
+
+
+<div class="viewcode-block" id="SQL.read_curve_cc">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.read_curve_cc">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_curve_cc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write dispersion curve data from SQL table &#39;curves&#39;.&quot;&quot;&quot;</span>
+
+        <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;SELECT </span><span class="si">{</span><span class="n">cols</span><span class="si">}</span><span class="s2"> FROM curves WHERE &quot;</span>
+        <span class="n">sql</span> <span class="o">+=</span> <span class="s2">&quot; AND &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">==</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="n">sql</span> <span class="o">+=</span> <span class="s2">&quot; AND sin != -1 AND rep != -1&quot;</span>
+
+        <span class="n">curve</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">curve</span></div>
+
+
+<div class="viewcode-block" id="SQL.write_filter">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.write_filter">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">rep</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="n">procset</span> <span class="o">=</span> <span class="s1">&#39;proc1&#39;</span><span class="p">,</span> <span class="n">wid</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;FK&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write filter to SQL table &#39;filter&#39;.&quot;&quot;&quot;</span>
+
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;procset&#39;</span><span class="p">:</span><span class="n">procset</span><span class="p">,</span>
+                            <span class="s1">&#39;wid&#39;</span><span class="p">:</span> <span class="n">wid</span><span class="p">,</span>
+                            <span class="s1">&#39;sin&#39;</span><span class="p">:</span> <span class="n">sin</span><span class="p">,</span>
+                            <span class="s1">&#39;rep&#39;</span><span class="p">:</span> <span class="n">rep</span><span class="p">,</span>
+                            <span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span>
+                           <span class="s1">&#39;x_value&#39;</span><span class="p">:</span><span class="n">x</span><span class="p">,</span>
+                           <span class="s1">&#39;y_value&#39;</span><span class="p">:</span><span class="n">y</span><span class="p">,</span>
+                           <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">type</span><span class="p">})</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;filter&#39;</span><span class="p">,</span> <span class="n">if_exists</span> <span class="o">=</span> <span class="s1">&#39;append&#39;</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SQL.read_filter">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.sql.SQL.read_filter">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read filter from SQL table &#39;filter&#39;.&quot;&quot;&quot;</span>
+
+        <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM filter WHERE &quot;</span>
+        <span class="n">sql</span> <span class="o">+=</span> <span class="s2">&quot; AND &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">==</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+
+        <span class="nb">filter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">filter</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="nb">filter</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s1">&#39;key&#39;</span><span class="p">,</span> <span class="s1">&#39;x_value&#39;</span><span class="p">],</span> <span class="n">ascending</span><span class="o">=</span><span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">],</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="nb">filter</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">filter</span></div>
+</div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, pySWAPP contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,371 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "9354cae8-0679-4675-9bc7-8c47174d786a",
+   "metadata": {},
+   "source": [
+    "# 4.a. Dispersion curve combination"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "617307f5-5372-4bef-93bd-2c074a5c4a26",
+   "metadata": {},
+   "source": [
+    "Combine dispersion curves based on two approaches."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "26aedccb-c705-4891-b5aa-938d4f4024b0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from pyswapp import *"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6abce062-e84a-4b74-a3b0-62da421de112",
+   "metadata": {},
+   "source": [
+    "### 1. Set the directories"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "0a8b3eea-1ce7-4db3-bd84-155ae16ca558",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "prj_dir = '../../data/syn_data' # project directory\n",
+    "path2raw = os.path.join(prj_dir,'raw') # path to raw data\n",
+    "path2geom = f'{prj_dir}/geometry.csv' # path to the geometry file"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "cfa33a6f-e36e-4784-bd55-e46e6a819169",
+   "metadata": {},
+   "source": [
+    "### 2. User defined settings for processing and plotting"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "d69b7074-fba1-460b-9a3e-02ffba530615",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "settings = create_settings(fmin=10, fmax=50,                  # frequency range\n",
+    "                           vmin=10, vmax=1000, velstep=1)     # testing phase velocity range and step"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a43ffe50-2f9e-47ea-a42f-37a7ce93679d",
+   "metadata": {},
+   "source": [
+    "### 3. Set up the MASW2DManager"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0bae7ad5-5322-4421-beef-be3389c134af",
+   "metadata": {},
+   "source": [
+    "Dispersion curve combination is possible with the MASW2D Manager."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "be184789-f29f-42b4-b62c-4dd8d0e740c4",
+   "metadata": {},
+   "source": [
+    "#### 3.1 Create a new project"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "628f78a7-68bc-48c0-bf3e-6f62d3642f4f",
+   "metadata": {},
+   "source": [
+    "Create a new project from scratch"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a0f2894b-637a-4a36-88fa-3a55b479997d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "swam = MASW2DManager(f'{prj_dir}/proc/4a_MASW2D',             # project directory path\n",
+    "                   path2raw=path2raw,                       # optional, copy & per default rename data from path (outside project directory)\n",
+    "                   path2geom=path2geom,                     # optional, copy geom from path (outside project directory)\n",
+    "                   settings=settings,                       # optional, define settings for visualisations and processing\n",
+    "                   rename = False,                          # optional, rename copied raw data to preferred filename format (Shotfile_<index>), default value is False!\n",
+    "                   overwrite = True,                       # optional, overwrite database .db file if it already exists --> create new project data base\n",
+    "                   )"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "55db6aa1-e1d9-43a8-ad12-9f02b37cc633",
+   "metadata": {},
+   "source": [
+    "#### 3.2 Load a project"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "2c4aa6d3-472a-43f4-ad47-5d850e723e04",
+   "metadata": {},
+   "source": [
+    "Load an existing project"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "86204c96-2c1d-40c3-a716-d9119d2d717f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "swam = MASW2DManager(f'{prj_dir}/proc/4a_MASW2D') # project directory path"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4ba7c233-352e-4a0a-b0ff-23057a63a760",
+   "metadata": {},
+   "source": [
+    "#### 3.3 Preprocess data"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "8005d33a-dab0-4161-897e-a962637a6079",
+   "metadata": {},
+   "source": [
+    "Apply one or several pre-processing options to the data"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "1c34fddc-2dca-4ca6-8ee3-2d73f6a020ce",
+   "metadata": {},
+   "source": [
+    "3.3.1 Windowing"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cdb363eb-25e3-4e48-a139-3923503297ca",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Run moving window along data\n",
+    "swam.moving_window(minoffset = 1, maxoffset = 1e6, wlen = 48, wmove = 1)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "5700e0f0-905e-4017-a145-8f9ad69cd724",
+   "metadata": {},
+   "source": [
+    "### 4. Dispersion curve extraction"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "44697da4-af71-4bf6-8e44-3b010e899c54",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# automatic dispersion curve extraction using MOPA\n",
+    "swam.extract(method = 'MOPA', stopAtChi2 = 1, abs_err = 0.01)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "bcdec62f-7712-43b9-90f1-86c510160058",
+   "metadata": {},
+   "source": [
+    "### 5. Dispersion curve combination"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "72f205bf-2430-45cf-8f45-c019bde9c84f",
+   "metadata": {},
+   "source": [
+    "5.1 Combine dispersion curves based on binning (after Olafsdottir, 2018)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e4722e9f-e8ce-4402-a17f-09c6d25539ee",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Settings to define binning intervals\n",
+    "CC_kwargs = {'combination_method' : 'binning',\n",
+    "            'a':15,            # parameter controlling the wavelength interval\n",
+    "            'xlim' : [5,55],  # xlimit for plotting\n",
+    "            'ylim' : [100,500],# ylimit for plotting\n",
+    "            'show': False}      # show the combined dc"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "361ba1ae-9447-450a-a385-dc60a4e27218",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Run combination\n",
+    "swam.combine(method = 'MOPA', filter = False, **CC_kwargs)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "51acd29b-b845-499f-abfe-93fbfb77f5d7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Run combination with prior manual filtering of curves assigned to same surface location\n",
+    "swam.combine(method = 'MOPA', filter = True, **CC_kwargs)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "289762ef-8713-4221-9cb2-08b4675031e3",
+   "metadata": {},
+   "source": [
+    "5.2 Combine the dispersion curves based on resampling"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3e79e158-c3b7-4008-a99c-c3693bf018bb",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Settings\n",
+    "CC_kwargs = {'combination_method' : 'resampling',\n",
+    "            'pmin':10,            # minimum frequency for common frequency range\n",
+    "            'pmax':50,           # maximum frequency for common frequency range\n",
+    "            'pn': 30,            # number of new sampling points\n",
+    "            'pspace': 'log',     # log or linear scale\n",
+    "            'kind': 'cubic',     # kind of interpolation\n",
+    "            'xlim' : [5,80],  # xlimit for plotting\n",
+    "            'ylim' : [50,400],# ylimit for plotting\n",
+    "            'show': False}      # show the combined dc"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "74c010ba-842c-4c5c-8520-839af05e79d6",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "swam.combine(method = 'MOPA', filter = True, **CC_kwargs)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "8a01f021-d534-4f6e-a93c-823413080536",
+   "metadata": {},
+   "source": [
+    "### 6. Process combined dispersion curves"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "6a467e7b-391e-4183-aee3-6f95e172a368",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "swam.process_CC(type='smooth', method='MOPA')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "530f4b1f-0f8c-45b9-ac0c-ae5c22627461",
+   "metadata": {},
+   "source": [
+    "### 7. Plotting"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "40ebd9d9-0c04-4b56-ba06-a9b3fbb69a9f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# plot the combined curves as pseudosection\n",
+    "swam.plot_CC(method='MOPA', cmap = 'cividis', vmax = 500)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "bd553d78-04d4-40fa-9a0b-6950190cf9c8",
+   "metadata": {},
+   "source": [
+    "#### 8. Save combined dispersion curves"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "698a8cb4-5222-4b13-9f96-85cbed8b6ff4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "swam.save_CC(method='MOPA')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "50f35630-124c-4b0e-83ae-bd859f077a8d",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "pyswapp",
+   "language": "python",
+   "name": "pyswapp"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.23"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

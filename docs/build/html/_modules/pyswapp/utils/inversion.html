@@ -1,0 +1,241 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyswapp.utils.inversion &mdash; pySWApp 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            pySWApp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pySWApp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pySWApp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyswapp.utils.inversion</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyswapp.utils.inversion</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># %% helper functions for solving system of equations</span>
+<div class="viewcode-block" id="linear_LSQR">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.inversion.linear_LSQR">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">linear_LSQR</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimate coefficients of a line y = k*x+phi0</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : np.ndarray, offsets</span>
+<span class="sd">    y : np.ndarray, phases</span>
+<span class="sd">    w : np.ndarray, weights</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    k: float, wavenumber</span>
+<span class="sd">    phi0: float, shift</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="k">if</span> <span class="n">w</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="c1"># weighted LSQR</span>
+
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="o">-</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))])</span><span class="o">.</span><span class="n">T</span> <span class="c1"># design matrix</span>
+
+    <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">@</span> <span class="n">W</span> <span class="o">@</span> <span class="n">A</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">@</span> <span class="n">W</span> <span class="o">@</span> <span class="n">y</span>
+
+    <span class="n">k</span> <span class="o">=</span> <span class="n">beta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">phi0</span> <span class="o">=</span> <span class="n">beta</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">k</span><span class="p">,</span> <span class="n">phi0</span></div>
+
+
+<div class="viewcode-block" id="phase_response">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.inversion.phase_response">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">phase_response</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">phi0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;return the phase&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">k</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">phi0</span></div>
+
+
+<div class="viewcode-block" id="compute_chi2">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.inversion.compute_chi2">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_chi2</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">resp</span><span class="p">,</span> <span class="n">error</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;compute rms and chi^2&quot;&quot;&quot;</span>
+    <span class="n">misfit</span> <span class="o">=</span> <span class="n">data</span> <span class="o">-</span> <span class="n">resp</span>
+    <span class="n">error_weighted_misfit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">misfit</span><span class="p">)</span> <span class="o">/</span> <span class="n">error</span>
+
+    <span class="n">rms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">misfit</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">rrms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">misfit</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">chi2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">error_weighted_misfit</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rms</span><span class="p">,</span> <span class="n">rrms</span><span class="p">,</span> <span class="n">chi2</span></div>
+
+
+<div class="viewcode-block" id="tomo2D_phasediff">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.inversion.tomo2D_phasediff">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">tomo2D_phasediff</span><span class="p">(</span><span class="n">lam</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">dphi</span><span class="p">,</span><span class="n">w</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tomographic like approach (Barone et al., 2019)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lam : int, regularization strength</span>
+<span class="sd">    f : float, frequency value of the analysis</span>
+<span class="sd">    A : np.ndarray, design matrix</span>
+<span class="sd">    dphi : np.ndarray, phase differences</span>
+<span class="sd">    w : np.ndarray, weights</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    phi_vel: np.ndarray, phase velocities</span>
+<span class="sd">    phi_model: np.ndarray, predicted phase differences</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">nm</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># first-order finite difference operator</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nm</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nm</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nm</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">G</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">G</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="c1"># weighted least squares matrices</span>
+    <span class="n">ATW</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">w</span>
+    <span class="n">Ni</span> <span class="o">=</span> <span class="n">ATW</span> <span class="o">@</span> <span class="n">A</span>  <span class="c1"># data term</span>
+    <span class="n">Mi</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">G</span>  <span class="c1"># smoothness term</span>
+
+    <span class="c1"># solve (Ni + λ² Mi) m = Aᵀ W dφ</span>
+    <span class="n">rhs</span> <span class="o">=</span> <span class="n">ATW</span> <span class="o">@</span> <span class="n">dphi</span>
+
+    <span class="n">Mreg</span> <span class="o">=</span> <span class="n">Ni</span> <span class="o">+</span> <span class="p">(</span><span class="n">lam</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">Mi</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">Mreg</span><span class="p">,</span> <span class="n">rhs</span><span class="p">)</span>
+    <span class="n">omega</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">f</span>
+
+    <span class="n">eps</span> <span class="o">=</span> <span class="mf">1e-12</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">eps</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+
+    <span class="n">phi_vel</span> <span class="o">=</span> <span class="o">-</span><span class="n">omega</span> <span class="o">/</span> <span class="n">m</span>  <span class="c1"># phase velocity</span>
+    <span class="n">phi_model</span> <span class="o">=</span> <span class="n">A</span> <span class="o">@</span> <span class="n">m</span>  <span class="c1"># predicted phase differences</span>
+
+    <span class="k">return</span> <span class="n">phi_vel</span><span class="p">,</span> <span class="n">phi_model</span></div>
+
+
+
+<div class="viewcode-block" id="lambda_search">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.inversion.lambda_search">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">lambda_search</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">dphi</span><span class="p">,</span><span class="n">w</span><span class="p">,</span> <span class="n">scale</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">lam_max</span> <span class="o">=</span> <span class="mi">200</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Search for optimum weight</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    f : float, frequency value of the analysis</span>
+<span class="sd">    A : np.ndarray, design matrix</span>
+<span class="sd">    dphi : np.ndarray, phase differences</span>
+<span class="sd">    w : np.ndarray, weights</span>
+<span class="sd">    scale: float, percentage value to decrease lambda</span>
+<span class="sd">    lam_max: int, maximum value of lambda</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    lam: int, optimal lambda</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">lam_max</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">scale</span><span class="p">))</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">lam</span> <span class="o">=</span> <span class="p">(</span><span class="n">lam_max</span> <span class="o">*</span> <span class="n">scale</span> <span class="o">**</span> <span class="n">k</span><span class="p">)</span>
+    <span class="n">lam</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">lam</span><span class="p">[</span><span class="n">lam</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
+
+    <span class="n">Cost</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dphi</span> <span class="o">-</span> <span class="n">tomo2D_phasediff</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">dphi</span><span class="p">,</span> <span class="n">w</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lam</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">lam</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">Cost</span><span class="p">)]</span></div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, pySWAPP contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

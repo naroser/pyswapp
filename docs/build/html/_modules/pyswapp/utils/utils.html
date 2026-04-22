@@ -1,0 +1,533 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyswapp.utils.utils &mdash; pySWApp 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            pySWApp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pySWApp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pySWApp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyswapp.utils.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyswapp.utils.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">interpolate</span>
+
+<span class="n">supported_extensions</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.sg2&#39;</span><span class="p">,</span><span class="s1">&#39;.dat&#39;</span><span class="p">,</span><span class="s1">&#39;.syn&#39;</span><span class="p">,</span><span class="s1">&#39;.sgy&#39;</span><span class="p">,</span><span class="s1">&#39;.syn&#39;</span><span class="p">]</span>
+
+<span class="c1"># %% Logging</span>
+<div class="viewcode-block" id="create_logging">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.utils.create_logging">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_logging</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; create logger &quot;&quot;&quot;</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+    <span class="c1"># create console handler and set level to debug</span>
+    <span class="n">ch</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+    <span class="n">ch</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+    <span class="c1"># create formatter</span>
+    <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># add formatter to ch</span>
+    <span class="n">ch</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+
+    <span class="c1"># add ch to logger</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">logger</span></div>
+
+
+<div class="viewcode-block" id="assert_exists">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.utils.assert_exists">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">assert_exists</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">check</span><span class="p">,</span> <span class="n">kind</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;assert a path exists&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">path</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">check</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">kind</span><span class="si">}</span><span class="s1"> &quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&quot; does not exist.&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="create_projectdir">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.utils.create_projectdir">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_projectdir</span><span class="p">(</span><span class="n">prjdir</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;create project directory&quot;&quot;&quot;</span>
+
+    <span class="n">subdirs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;01_data/raw&#39;</span><span class="p">,</span><span class="s1">&#39;02_geom&#39;</span><span class="p">,</span><span class="s1">&#39;03_proc&#39;</span><span class="p">,</span><span class="s1">&#39;04_figs&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">sd</span> <span class="ow">in</span> <span class="n">subdirs</span><span class="p">:</span>
+        <span class="n">safe_makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prjdir</span><span class="p">,</span><span class="n">sd</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="rename_files">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.utils.rename_files">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">rename_files</span><span class="p">(</span><span class="n">path2raw</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="s1">&#39;.sg2&#39;</span><span class="p">,</span> <span class="n">prjdir</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">channel_nr</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">rename</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;copy &amp; optionally rename file for easier handling of geometry&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">extension</span><span class="p">:</span>
+        <span class="n">extension</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">extension</span>
+
+    <span class="n">original</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path2raw</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">fname</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">extension</span><span class="p">):</span>
+            <span class="n">original</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+    <span class="n">original</span> <span class="o">=</span> <span class="n">natural_sort</span><span class="p">(</span><span class="n">original</span><span class="p">)</span>
+    <span class="n">renamed</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Shotfile_</span><span class="si">{</span><span class="n">channel_nr</span><span class="o">+</span><span class="n">i</span><span class="si">}{</span><span class="n">extension</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">original</span><span class="p">))]</span>
+
+    <span class="c1"># Copy and rename the copied file</span>
+    <span class="k">for</span> <span class="n">fname_old</span><span class="p">,</span><span class="n">fname_new</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">original</span><span class="p">,</span><span class="n">renamed</span><span class="p">):</span>
+        <span class="c1">#path, name = os.path.split(fname)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path2raw</span><span class="p">,</span><span class="n">fname_old</span><span class="p">),</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prjdir</span><span class="p">,</span><span class="sa">f</span><span class="s1">&#39;01_data/raw/</span><span class="si">{</span><span class="n">fname_old</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">rename</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prjdir</span><span class="p">,</span><span class="sa">f</span><span class="s1">&#39;01_data/raw/</span><span class="si">{</span><span class="n">fname_old</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">),</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prjdir</span><span class="p">,</span><span class="sa">f</span><span class="s1">&#39;01_data/raw/</span><span class="si">{</span><span class="n">fname_new</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">))</span></div>
+
+
+
+<span class="c1"># %% file tools for reading/writing</span>
+<div class="viewcode-block" id="print_inventory">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.utils.print_inventory">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_inventory</span><span class="p">(</span><span class="n">dct</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;print the dictionary items to console&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dct</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="se">\t</span><span class="s2">|</span><span class="se">\t</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dct</span><span class="p">[</span><span class="n">key</span><span class="p">])))</span></div>
+
+
+<span class="c1"># %% file tools</span>
+<div class="viewcode-block" id="get_num_from_str">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.utils.get_num_from_str">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_num_from_str</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;extract numbers from string&quot;&quot;&quot;</span>
+
+    <span class="n">p</span> <span class="o">=</span> <span class="s1">&#39;[\d]+[.,\d]+|[\d]*[.][\d]+|[\d]+&#39;</span>
+
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">string</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">string</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="natural_sort">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.utils.natural_sort">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">natural_sort</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;sort list based on numbers in ascending order&quot;&quot;&quot;</span>
+    <span class="n">convert</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">else</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">alphanum_key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">key</span><span class="p">:</span> <span class="p">[</span><span class="n">convert</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;([0-9]+)&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">alphanum_key</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="read_filter">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.utils.read_filter">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_filter</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;import existing filters from file&quot;&quot;&quot;</span>
+
+    <span class="n">points_top</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">points_bot</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Expect lines like: t &lt;npoints&gt;   or   b &lt;npoints&gt;</span>
+        <span class="k">if</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">npoints</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+            <span class="c1"># Collect the following npoints lines</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">npoints</span><span class="p">):</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+
+                <span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">label</span> <span class="o">==</span> <span class="s1">&#39;t&#39;</span><span class="p">:</span>
+                    <span class="n">points_top</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">points_bot</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+
+            <span class="c1"># Skip past the block</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">npoints</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">points_top</span><span class="p">],</span> <span class="p">[</span><span class="n">points_bot</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="write_filter">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.utils.write_filter">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_filter</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;export filter to file&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="c1"># points is assumed to be a dict {x: y}</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">xi</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">yi</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="filter_df2dict">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.utils.filter_df2dict">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">filter_df2dict</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{},{}</span>
+
+    <span class="n">top</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;t&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;x_value&#39;</span><span class="p">)</span>
+    <span class="n">bot</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;b&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;x_value&#39;</span><span class="p">)</span>
+
+    <span class="n">points_top</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">top</span><span class="p">[</span><span class="s1">&#39;x_value&#39;</span><span class="p">],</span> <span class="n">top</span><span class="p">[</span><span class="s1">&#39;y_value&#39;</span><span class="p">]))</span>
+    <span class="n">points_bot</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">bot</span><span class="p">[</span><span class="s1">&#39;x_value&#39;</span><span class="p">],</span> <span class="n">bot</span><span class="p">[</span><span class="s1">&#39;y_value&#39;</span><span class="p">]))</span>
+
+    <span class="k">return</span> <span class="n">points_top</span><span class="p">,</span> <span class="n">points_bot</span></div>
+
+
+<div class="viewcode-block" id="save2csv">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.utils.save2csv">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save2csv</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">freq</span><span class="p">,</span> <span class="n">vel</span><span class="p">,</span> <span class="n">err</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;save dispersion curve in csv format&quot;&quot;&quot;</span>
+
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;#Frequency,Velocity,Velstd</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">freq</span><span class="p">)):</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%.3f</span><span class="s1">,</span><span class="si">%.3f</span><span class="s1">,</span><span class="si">%.9f</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span>
+                <span class="p">(</span><span class="n">freq</span><span class="p">[</span><span class="n">line</span><span class="p">],</span>
+                 <span class="n">vel</span><span class="p">[</span><span class="n">line</span><span class="p">],</span>
+                 <span class="n">err</span><span class="p">[</span><span class="n">line</span><span class="p">]))</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_shotfiles_from_geometry">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.utils.get_shotfiles_from_geometry">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_shotfiles_from_geometry</span><span class="p">(</span><span class="n">path2raw</span><span class="p">,</span> <span class="n">shot_files</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="s1">&#39;.sg2&#39;</span><span class="p">,</span> <span class="n">sort_ascending</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;get the paths to the shot files from the geometry.csv file&quot;&quot;&quot;</span>
+    <span class="n">fnames</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path2raw</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">fname</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">extension</span><span class="p">):</span>
+            <span class="n">fnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+    <span class="n">fnames</span> <span class="o">=</span> <span class="n">natural_sort</span><span class="p">(</span><span class="n">fnames</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sort_ascending</span><span class="p">:</span>
+        <span class="n">fnames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">fnames</span><span class="p">))</span>
+
+    <span class="n">path2sht</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">sht</span> <span class="ow">in</span> <span class="n">shot_files</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sht</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+            <span class="n">sht_reps</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">fname</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fnames</span><span class="p">):</span>
+                <span class="n">sfn</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d+&#39;</span><span class="p">,</span> <span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">extension</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">])</span>
+
+                <span class="k">for</span> <span class="n">rep</span> <span class="ow">in</span> <span class="n">sht</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">rep</span> <span class="o">==</span><span class="n">sfn</span><span class="p">:</span>
+                        <span class="n">sht_reps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path2raw</span><span class="p">,</span> <span class="n">fnames</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+
+            <span class="n">path2sht</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sht_reps</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">fname</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fnames</span><span class="p">):</span>
+                <span class="n">sfn</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d+&#39;</span><span class="p">,</span> <span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">extension</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">])</span>
+
+                <span class="k">if</span> <span class="n">sht</span> <span class="o">==</span> <span class="n">sfn</span><span class="p">:</span>
+                    <span class="n">path2sht</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path2raw</span><span class="p">,</span> <span class="n">fnames</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+
+    <span class="k">return</span> <span class="n">path2sht</span></div>
+
+
+
+<div class="viewcode-block" id="create_geometry">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.utils.create_geometry">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_geometry</span><span class="p">(</span><span class="n">path2raw</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path2geom</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;geometry.csv&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    create a geometry.csv from seismic shot files (.sgy and .sg2 file formats)</span>
+
+<span class="sd">    This function can be used to convert the source and geophone coordinate information contained</span>
+<span class="sd">    in the seismic raw data to the geometry file format. The geometry file is a csv file that stores</span>
+<span class="sd">    an abstract representation of the survey layout, that can be optionally passed to some modules.</span>
+<span class="sd">    Check out docs/geometry_file.pdf for a description of the format.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    path2raw: str, paths to shot files</span>
+<span class="sd">    path2geom: str, path to geometry file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#from swa.stream import SeismicStream</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..stream</span><span class="w"> </span><span class="kn">import</span> <span class="n">SeismicStream</span>
+
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">create_logging</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Create Geometry&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path2raw</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Path </span><span class="si">{</span><span class="n">path2raw</span><span class="si">}</span><span class="s2"> does not exist.&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">shot_files</span> <span class="o">=</span> <span class="n">natural_sort</span><span class="p">([</span><span class="n">entry</span><span class="o">.</span><span class="n">path</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">scandir</span><span class="p">(</span><span class="n">path2raw</span><span class="p">)</span> <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">is_file</span><span class="p">()])</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">shot_files</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No data in </span><span class="si">{</span><span class="n">path2raw</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">shot_files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.syn&quot;</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Files with &quot;.syn&quot; extension do not contain geometry information.&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="c1"># add receiver stations first</span>
+    <span class="n">geom_rows</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">shot_files</span><span class="p">:</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">SeismicStream</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">stream</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">channel_nr</span><span class="o">=</span><span class="mi">1001</span><span class="p">,</span> <span class="n">extract_geometry</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">stream</span><span class="o">.</span><span class="n">set_shot_params</span><span class="p">()</span>
+
+        <span class="n">receivers</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">receiver</span>
+        <span class="n">ngeo</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">nchannels</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">receivers</span><span class="p">))</span> <span class="o">!=</span> <span class="n">ngeo</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unique geophone coordinates do not match expected count &quot;</span>
+                         <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">receivers</span><span class="p">))</span><span class="si">}</span><span class="s2"> != </span><span class="si">{</span><span class="n">ngeo</span><span class="si">}</span><span class="s2">) in file </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># add geophone rows</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">receivers</span><span class="p">:</span>
+            <span class="n">geom_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">geo</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">shot</span><span class="o">=</span><span class="s2">&quot;-1&quot;</span><span class="p">,</span> <span class="n">first_geo</span><span class="o">=</span><span class="s2">&quot;-1&quot;</span><span class="p">,</span> <span class="n">ngeo</span><span class="o">=</span><span class="s2">&quot;-1&quot;</span><span class="p">))</span>
+
+    <span class="c1"># remove duplicates &amp; sort</span>
+    <span class="n">geom</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">geom_rows</span><span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+    <span class="n">geom</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">geom</span><span class="p">)))</span>
+    <span class="n">geom</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">x_to_id</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">geom</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+
+    <span class="c1"># add the shots</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">shot_files</span><span class="p">)):</span>
+
+        <span class="c1"># seismic stream containing survey geometry</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">SeismicStream</span><span class="p">(</span><span class="n">shot_files</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">stream</span><span class="o">.</span><span class="n">read_data</span><span class="p">(</span><span class="n">shot_files</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">channel_nr</span><span class="o">=</span><span class="mi">1001</span><span class="p">,</span> <span class="n">extract_geometry</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">stream</span><span class="o">.</span><span class="n">set_shot_params</span><span class="p">()</span>                    <span class="c1"># set the shot parameters from the seismic data</span>
+
+        <span class="n">first_geo</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">receiver</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>              <span class="c1"># first geophone</span>
+        <span class="n">ngeo</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">nchannels</span>                     <span class="c1"># number of geophones</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">source</span>                      <span class="c1"># source x-coordinate</span>
+        <span class="n">sin</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">get_num_from_str</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">pre</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>   <span class="c1"># numerical part of file</span>
+
+        <span class="k">if</span> <span class="n">first_geo</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">x_to_id</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Receiver </span><span class="si">{</span><span class="n">first_geo</span><span class="si">}</span><span class="s2"> not found in geometry table.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">first_geo_id</span> <span class="o">=</span> <span class="n">x_to_id</span><span class="p">[</span><span class="n">first_geo</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">source</span> <span class="ow">in</span> <span class="n">x_to_id</span><span class="p">:</span>
+            <span class="n">sid</span> <span class="o">=</span> <span class="n">x_to_id</span><span class="p">[</span><span class="n">source</span><span class="p">]</span>
+            <span class="n">geom</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sid</span><span class="p">,</span><span class="s1">&#39;shot&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_append_to_str_field</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sid</span><span class="p">,</span> <span class="s2">&quot;shot&quot;</span><span class="p">],</span> <span class="n">sin</span><span class="p">)</span>
+            <span class="n">geom</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sid</span><span class="p">,</span> <span class="s1">&#39;first_geo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_append_to_str_field</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sid</span><span class="p">,</span> <span class="s2">&quot;first_geo&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">(</span><span class="n">first_geo_id</span><span class="p">))</span>
+            <span class="n">geom</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sid</span><span class="p">,</span> <span class="s1">&#39;ngeo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_append_to_str_field</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sid</span><span class="p">,</span> <span class="s2">&quot;ngeo&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">(</span><span class="n">ngeo</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># new source row</span>
+            <span class="n">new_row</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">source</span><span class="p">,</span>
+                <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">geo</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">shot</span><span class="o">=</span><span class="n">sin</span><span class="p">,</span>
+                <span class="n">first_geo</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">first_geo_id</span><span class="p">),</span>
+                <span class="n">ngeo</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">ngeo</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">geom</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">geom</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">new_row</span><span class="p">])],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">x_to_id</span><span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">geom</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span>
+    <span class="n">geom</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">astype</span><span class="p">({</span><span class="s2">&quot;shot&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;first_geo&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;ngeo&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">})</span>
+    <span class="n">geom</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">path2geom</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Geometry written to </span><span class="si">{</span><span class="n">path2geom</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_append_to_str_field</span><span class="p">(</span><span class="n">existing</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">existing</span> <span class="o">==</span> <span class="s2">&quot;-1&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">new</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">existing</span><span class="si">}</span><span class="s2">;</span><span class="si">{</span><span class="n">new</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<div class="viewcode-block" id="get_fileList">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.utils.get_fileList">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_fileList</span><span class="p">(</span><span class="n">path2raw</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;get the paths to the shot files from the geometry.csv file&quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">supported_extensions</span><span class="p">:</span>
+        <span class="n">fname_list</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path2raw</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span> <span class="o">+</span> <span class="n">ext</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fname_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fname_list</span><span class="p">,</span> <span class="n">ext</span>
+
+    <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="read_DC_csv">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.utils.read_DC_csv">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_DC_csv</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;read a dispersion curve file from a csv file&quot;&quot;&quot;</span>
+    <span class="n">dat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="n">skip_header</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dat</span><span class="p">,</span><span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="safe_makedirs">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.utils.safe_makedirs">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">safe_makedirs</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;safe generation of directories&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="k">pass</span>  <span class="c1"># Ignore errors</span></div>
+
+
+
+<div class="viewcode-block" id="combine_dict">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.utils.combine_dict">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">combine_dict</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;combine two dictionaries&quot;&quot;&quot;</span>
+
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">d2</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">d1</span><span class="p">:</span>
+            <span class="n">d1</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">d1</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">value</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">d1</span></div>
+
+
+
+<span class="c1"># %% helper functions for waveform transformation</span>
+<div class="viewcode-block" id="nextpow2">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.utils.nextpow2">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">nextpow2</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;exponent of next higher power of 2&quot;&quot;&quot;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">p</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+        <span class="n">p</span> <span class="o">*=</span> <span class="mi">2</span>
+        <span class="n">count</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">count</span><span class="p">,</span><span class="n">p</span></div>
+
+
+<span class="c1"># %% Interpolation</span>
+<div class="viewcode-block" id="interp">
+<a class="viewcode-back" href="../../../pyswapp.utils.html#pyswapp.utils.utils.interp">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">interp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">xx</span><span class="p">,</span><span class="n">yerr</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;interpolate data&quot;&quot;&quot;</span>
+
+    <span class="n">f</span> <span class="o">=</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">yy</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">xx</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">yerr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ferr</span> <span class="o">=</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">yyerr</span> <span class="o">=</span> <span class="n">ferr</span><span class="p">(</span><span class="n">xx</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">xx</span><span class="p">,</span><span class="n">yy</span><span class="p">,</span><span class="n">yyerr</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="kc">None</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, pySWAPP contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

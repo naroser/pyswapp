@@ -1,0 +1,545 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyswapp.curve &mdash; pySWApp 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            pySWApp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">pySWApp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pySWApp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyswapp.curve</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyswapp.curve</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.path</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpltPath</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">FutureWarning</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DispersionCurve">
+<a class="viewcode-back" href="../../pyswapp.html#pyswapp.curve.DispersionCurve">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DispersionCurve</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;class to manipulate and save dispersion curve data&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">mode</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wave</span> <span class="o">=</span> <span class="s1">&#39;rayleigh&#39;</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_orig</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Mode number must be 0 or higher (0 = fundamental mode).&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">wave</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;rayleigh&#39;</span><span class="p">,</span> <span class="s1">&#39;love&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Wave type must &quot;love&quot; or &quot;rayleigh&quot;.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">=</span> <span class="n">mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span> <span class="o">=</span> <span class="n">wave</span>
+
+<div class="viewcode-block" id="DispersionCurve.init_data">
+<a class="viewcode-back" href="../../pyswapp.html#pyswapp.curve.DispersionCurve.init_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">init_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freq</span><span class="p">,</span> <span class="n">vel</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;initialize data&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="o">=</span> <span class="n">freq</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">period</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">freq</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">vel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wavenumber</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_wavenumber</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_wavelength</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">err</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">err</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">npts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_orig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_orig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">npts_orig</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_orig</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DispersionCurve.read">
+<a class="viewcode-back" href="../../pyswapp.html#pyswapp.curve.DispersionCurve.read">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;import data from file&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">fname</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">):</span>
+            <span class="n">dat</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">read_DC_csv</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_data</span><span class="p">(</span><span class="n">dat</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">dat</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">err</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_estimate_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">offsets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nchannels</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span><span class="n">dx</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;estimate error&quot;&quot;&quot;</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="n">lorentzian_err</span><span class="p">(</span><span class="n">offsets</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span> <span class="n">nchannels</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">err</span>
+
+<div class="viewcode-block" id="DispersionCurve.estimate_error">
+<a class="viewcode-back" href="../../pyswapp.html#pyswapp.curve.DispersionCurve.estimate_error">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">estimate_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;estimate error&quot;&quot;&quot;</span>
+
+        <span class="n">err</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estimate_error</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">err</span>
+
+        <span class="n">curve_new</span> <span class="o">=</span> <span class="n">DispersionCurve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span><span class="p">)</span>
+        <span class="n">curve_new</span><span class="o">.</span><span class="n">init_data</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">],</span> <span class="n">vel</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">],</span> <span class="n">err</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">curve_new</span></div>
+
+
+<div class="viewcode-block" id="DispersionCurve.set">
+<a class="viewcode-back" href="../../pyswapp.html#pyswapp.curve.DispersionCurve.set">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">orig</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;set a parameter&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="n">orig</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_orig</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_wavenumber</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">frequency</span><span class="p">,</span><span class="n">velocity</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;compute wavenumber&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">wavenumber</span><span class="p">(</span><span class="n">frequency</span><span class="p">,</span><span class="n">velocity</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_wavelength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">frequency</span><span class="p">,</span><span class="n">velocity</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;compute wavelength&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">wavelength</span><span class="p">(</span><span class="n">frequency</span><span class="p">,</span><span class="n">velocity</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">frequency</span><span class="p">,</span><span class="n">wavenumber</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;compute velocity&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">phase_velocity</span><span class="p">(</span><span class="n">frequency</span><span class="p">,</span><span class="n">wavenumber</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_frequency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">wavelength</span><span class="p">,</span><span class="n">velocity</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;compute frequency&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">frequency</span><span class="p">(</span><span class="n">wavelength</span><span class="p">,</span><span class="n">velocity</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DispersionCurve.get_data">
+<a class="viewcode-back" href="../../pyswapp.html#pyswapp.curve.DispersionCurve.get_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;store data in a data frame&quot;&quot;&quot;</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavenumber</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;wavelength&#39;</span><span class="p">,</span> <span class="s1">&#39;wavenumber&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="DispersionCurve.resample">
+<a class="viewcode-back" href="../../pyswapp.html#pyswapp.curve.DispersionCurve.resample">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pmin</span><span class="p">,</span> <span class="n">pmax</span><span class="p">,</span> <span class="n">pn</span><span class="p">,</span> <span class="n">pspace</span> <span class="o">=</span> <span class="s1">&#39;log&#39;</span><span class="p">,</span> <span class="n">param</span> <span class="o">=</span> <span class="s1">&#39;frequency&#39;</span><span class="p">,</span> <span class="n">kind</span> <span class="o">=</span> <span class="s1">&#39;cubic&#39;</span><span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;resample data&quot;&quot;&quot;</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">,</span><span class="s1">&#39;wavelength&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">pspace</span> <span class="o">==</span> <span class="s1">&#39;log&#39;</span><span class="p">:</span>
+                <span class="n">parx_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">geomspace</span><span class="p">(</span><span class="n">pmin</span><span class="p">,</span><span class="n">pmax</span><span class="p">,</span><span class="n">pn</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">parx_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">pmin</span><span class="p">,</span><span class="n">pmax</span><span class="p">,</span><span class="n">pn</span><span class="p">)</span>
+
+            <span class="n">parx</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">pary</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">parx_new</span><span class="p">,</span> <span class="n">pary_new</span><span class="p">,</span> <span class="n">err_new</span> <span class="o">=</span> <span class="n">interp</span><span class="p">(</span><span class="n">parx</span><span class="p">,</span><span class="n">pary</span><span class="p">,</span><span class="n">parx_new</span><span class="p">,</span><span class="n">yerr</span><span class="o">=</span><span class="n">err</span><span class="p">,</span><span class="n">kind</span> <span class="o">=</span> <span class="n">kind</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">param</span> <span class="o">==</span> <span class="s1">&#39;wavelength&#39;</span><span class="p">:</span>
+                <span class="n">parx_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_frequency</span><span class="p">(</span><span class="n">parx_new</span><span class="p">,</span> <span class="n">pary_new</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">init_data</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">parx_new</span><span class="p">,</span><span class="n">vel</span><span class="o">=</span><span class="n">pary_new</span><span class="p">,</span><span class="n">err</span><span class="o">=</span><span class="n">err_new</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">npts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">curve_new</span> <span class="o">=</span> <span class="n">DispersionCurve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_wave</span><span class="p">)</span>
+                <span class="n">curve_new</span><span class="o">.</span><span class="n">init_data</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">parx_new</span><span class="p">,</span><span class="n">vel</span><span class="o">=</span><span class="n">pary_new</span><span class="p">,</span><span class="n">err</span><span class="o">=</span><span class="n">err_new</span><span class="p">)</span>
+
+                <span class="k">return</span> <span class="n">curve_new</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Wrong parameter key handed.&#39;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_median_filter</span><span class="p">(</span><span class="n">vel</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">kernel_size</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;kernel size must be odd&quot;</span><span class="p">)</span>
+        <span class="n">k2</span> <span class="o">=</span> <span class="p">(</span><span class="n">kernel_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">vel</span><span class="p">),</span> <span class="n">kernel_size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">y</span><span class="p">[:,</span> <span class="n">k2</span><span class="p">]</span> <span class="o">=</span> <span class="n">vel</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k2</span><span class="p">):</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">k2</span> <span class="o">-</span> <span class="n">i</span>
+            <span class="n">y</span><span class="p">[</span><span class="n">j</span><span class="p">:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">vel</span><span class="p">[:</span><span class="o">-</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">y</span><span class="p">[:</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">vel</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">y</span><span class="p">[:</span><span class="o">-</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">vel</span><span class="p">[</span><span class="n">j</span><span class="p">:]</span>
+            <span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="n">j</span><span class="p">:,</span> <span class="o">-</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">vel</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_moving_average_filter</span><span class="p">(</span><span class="n">vel</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="n">kernel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">kernel_size</span><span class="p">)</span> <span class="o">/</span> <span class="n">kernel_size</span>
+        <span class="n">vel_convolved</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">vel</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">vel_convolved</span>
+
+<div class="viewcode-block" id="DispersionCurve.smooth">
+<a class="viewcode-back" href="../../pyswapp.html#pyswapp.curve.DispersionCurve.smooth">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">smooth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;smooth data&quot;&quot;&quot;</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">vel</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">freq</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+        <span class="n">vel_filt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_median_filter</span><span class="p">(</span><span class="n">vel</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">)</span>
+        <span class="n">vel_filt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_moving_average_filter</span><span class="p">(</span><span class="n">vel_filt</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">)</span>
+
+        <span class="n">extend</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">pary_new</span> <span class="o">=</span> <span class="n">vel_filt</span><span class="p">[</span><span class="n">extend</span><span class="p">:</span><span class="o">-</span><span class="n">extend</span><span class="p">]</span>
+        <span class="n">parx_new</span> <span class="o">=</span> <span class="n">freq</span><span class="p">[</span><span class="n">extend</span><span class="p">:</span><span class="o">-</span><span class="n">extend</span><span class="p">]</span>
+        <span class="n">err_new</span> <span class="o">=</span> <span class="n">err</span><span class="p">[</span><span class="n">extend</span><span class="p">:</span><span class="o">-</span><span class="n">extend</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_data</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">parx_new</span><span class="p">,</span> <span class="n">vel</span><span class="o">=</span><span class="n">pary_new</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="n">err_new</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">npts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">curve_new</span> <span class="o">=</span> <span class="n">DispersionCurve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span><span class="p">)</span>
+            <span class="n">curve_new</span><span class="o">.</span><span class="n">init_data</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">parx_new</span><span class="p">,</span> <span class="n">vel</span><span class="o">=</span><span class="n">pary_new</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="n">err_new</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">curve_new</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_points_within_poly</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;create boolean vector for points inside a polygon&quot;&quot;&quot;</span>
+
+        <span class="n">path</span> <span class="o">=</span> <span class="n">mpltPath</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+        <span class="n">flags</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">contains_points</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">f</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">flags</span>
+
+<div class="viewcode-block" id="DispersionCurve.markInvalid_by_poly">
+<a class="viewcode-back" href="../../pyswapp.html#pyswapp.curve.DispersionCurve.markInvalid_by_poly">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">markInvalid_by_poly</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;mark invalid rows based on points inside a polygon&quot;&quot;&quot;</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">f</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">frequency</span>
+        <span class="n">vel</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">velocity</span>
+
+        <span class="n">flags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_points_within_poly</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">vel</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;invalid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flags</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="DispersionCurve.markInvalid">
+<a class="viewcode-back" href="../../pyswapp.html#pyswapp.curve.DispersionCurve.markInvalid">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">markInvalid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">param</span> <span class="o">=</span> <span class="s1">&#39;frequency&#39;</span><span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;mark invalid data points&quot;&quot;&quot;</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">par</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="nb">min</span><span class="p">,</span> <span class="nb">max</span> <span class="o">=</span> <span class="n">pmin</span><span class="p">,</span> <span class="n">pmax</span>
+
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;invalid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">par</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">flagidx</span> <span class="o">=</span> <span class="n">mask</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">min</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="n">flagidx</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="nb">min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="n">flagidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">par</span> <span class="o">&lt;</span> <span class="nb">min</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="nb">max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">min</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="n">flagidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">par</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flagidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">par</span> <span class="o">&lt;</span> <span class="nb">min</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">par</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">flagidx</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;invalid&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="DispersionCurve.dropInvalid">
+<a class="viewcode-back" href="../../pyswapp.html#pyswapp.curve.DispersionCurve.dropInvalid">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dropInvalid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">inplace</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;drop invalid data points&quot;&quot;&quot;</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">invalid</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;invalid&#39;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_data</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">],</span> <span class="n">vel</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">],</span> <span class="n">err</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">npts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">curve_new</span> <span class="o">=</span> <span class="n">DispersionCurve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span><span class="p">)</span>
+            <span class="n">curve_new</span><span class="o">.</span><span class="n">init_data</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">],</span> <span class="n">vel</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">],</span> <span class="n">err</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">curve_new</span></div>
+
+
+<div class="viewcode-block" id="DispersionCurve.filter">
+<a class="viewcode-back" href="../../pyswapp.html#pyswapp.curve.DispersionCurve.filter">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">param</span> <span class="o">=</span> <span class="s1">&#39;frequency&#39;</span><span class="p">,</span> <span class="n">inplace</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;remove points outside of [pmin,pmax]&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">markInvalid</span><span class="p">(</span><span class="n">pmin</span><span class="p">,</span><span class="n">pmax</span><span class="p">,</span><span class="n">param</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropInvalid</span><span class="p">(</span><span class="n">inplace</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DispersionCurve.save">
+<a class="viewcode-back" href="../../pyswapp.html#pyswapp.curve.DispersionCurve.save">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prjdir</span><span class="p">,</span> <span class="n">pre</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="n">parkseis_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;save dispersion curve data to file&quot;&quot;&quot;</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s1">&#39;csv&#39;</span><span class="p">:</span>
+            <span class="n">safe_makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prjdir</span><span class="p">,</span> <span class="s2">&quot;0_csv&quot;</span><span class="p">))</span>
+
+            <span class="n">outfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prjdir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;0_csv/</span><span class="si">{</span><span class="n">pre</span><span class="si">}</span><span class="s2">.csv&quot;</span><span class="p">)</span>
+
+            <span class="n">save2csv</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">frequency</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">velocity</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">error</span><span class="p">))</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data format not provided. &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;Choose one of the formats: </span><span class="si">{</span><span class="s1">&#39;csv&#39;</span><span class="si">}</span><span class="s2"> or </span><span class="si">{</span><span class="p">[</span><span class="s1">&#39;ParkSeis&#39;</span><span class="p">,</span><span class="s1">&#39;PS&#39;</span><span class="p">,</span><span class="s1">&#39;dat&#39;</span><span class="p">,</span><span class="s1">&#39;DAT&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DispersionCurve.plot">
+<a class="viewcode-back" href="../../pyswapp.html#pyswapp.curve.DispersionCurve.plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_orig</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;plot dispersion curve&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">keyy</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;y_value&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">)</span>
+        <span class="n">keyx</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;x_value&#39;</span><span class="p">,</span> <span class="s1">&#39;frequency&#39;</span><span class="p">)</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="s1">&#39;royalblue&#39;</span><span class="p">)</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">,</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;alpha&#39;</span><span class="p">,</span><span class="mf">0.7</span><span class="p">)</span>
+        <span class="n">marker</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;marker&#39;</span><span class="p">,</span><span class="s1">&#39;o&#39;</span><span class="p">)</span>
+        <span class="n">marker_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span>
+        <span class="n">axis_style</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;axis_style&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">figsize</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;figsize&#39;</span><span class="p">,(</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+        <span class="n">edgecolor</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;edgecolor&#39;</span><span class="p">,</span><span class="n">color</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">keyy</span> <span class="o">==</span> <span class="s1">&#39;velocity&#39;</span><span class="p">:</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">labely</span> <span class="o">=</span> <span class="s2">&quot;phase velocity (m/s)&quot;</span>
+        <span class="k">elif</span> <span class="n">keyy</span> <span class="o">==</span> <span class="s1">&#39;wavenumber&#39;</span><span class="p">:</span>
+            <span class="n">err_vr</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="n">wavenumber</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">frequency</span><span class="o">.</span><span class="n">values</span><span class="p">,</span><span class="n">err_vr</span><span class="p">)</span>
+            <span class="n">labely</span> <span class="o">=</span> <span class="s1">&#39;wavenumber (rad/m)&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span>
+        <span class="k">if</span> <span class="n">keyx</span> <span class="o">==</span> <span class="s1">&#39;frequency&#39;</span><span class="p">:</span>
+            <span class="n">labelx</span> <span class="o">=</span> <span class="s2">&quot;frequency (Hz)&quot;</span>
+        <span class="k">elif</span> <span class="n">keyx</span> <span class="o">==</span> <span class="s1">&#39;wavelength&#39;</span><span class="p">:</span>
+            <span class="n">labelx</span> <span class="o">=</span> <span class="s1">&#39;wavelength (m)&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span>
+
+        <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">,</span> <span class="n">constrained_layout</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">figure</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_orig</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">show_orig</span><span class="p">:</span>
+            <span class="n">data_orig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_orig</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">data_orig</span><span class="p">[</span><span class="n">keyx</span><span class="p">],</span> <span class="n">data_orig</span><span class="p">[</span><span class="n">keyy</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="n">marker</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">marker_size</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
+                       <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;orig. data&#39;</span><span class="p">,</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">keyy</span> <span class="o">==</span> <span class="s1">&#39;velocity&#39;</span><span class="p">:</span>
+                <span class="n">err_orig</span> <span class="o">=</span> <span class="n">data_orig</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">values</span>
+            <span class="k">elif</span> <span class="n">keyy</span> <span class="o">==</span> <span class="s1">&#39;wavenumber&#39;</span><span class="p">:</span>
+                <span class="n">err_vr</span> <span class="o">=</span> <span class="n">data_orig</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">values</span>
+                <span class="n">err_orig</span> <span class="o">=</span> <span class="n">wavenumber</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">frequency</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">err_vr</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span>
+
+            <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">data_orig</span><span class="p">[</span><span class="n">keyx</span><span class="p">],</span> <span class="n">y1</span><span class="o">=</span><span class="n">data_orig</span><span class="p">[</span><span class="n">keyy</span><span class="p">]</span> <span class="o">-</span> <span class="n">err_orig</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="n">data_orig</span><span class="p">[</span><span class="n">keyy</span><span class="p">]</span> <span class="o">+</span> <span class="n">err_orig</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">keyx</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="n">keyy</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="n">marker</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">marker_size</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="n">edgecolor</span><span class="p">,</span>
+                   <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">label</span><span class="p">,</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;showErr&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+
+            <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">keyx</span><span class="p">],</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">velocity</span> <span class="o">-</span> <span class="n">err</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span>  <span class="n">data</span><span class="o">.</span><span class="n">velocity</span> <span class="o">+</span> <span class="n">err</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+                            <span class="n">color</span> <span class="o">=</span> <span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">edgecolor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;data error&#39;</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">label</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;fontsize&#39;</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">labelx</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">labely</span><span class="p">)</span>
+
+        <span class="c1"># configure styling</span>
+        <span class="k">if</span> <span class="n">axis_style</span><span class="p">:</span>
+
+            <span class="n">plt_xmin</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;xmin&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">keyx</span><span class="p">]))</span>
+            <span class="n">plt_xmax</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;xmax&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">keyx</span><span class="p">]))</span>
+
+            <span class="n">plt_ymin</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;ymin&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">keyy</span><span class="p">])</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+            <span class="n">plt_ymax</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;ymax&#39;</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">keyy</span><span class="p">])</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="n">plt_ymin</span><span class="p">,</span><span class="n">plt_ymax</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_orig</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">data_orig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_orig</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data_orig</span><span class="p">[</span><span class="n">keyx</span><span class="p">])</span><span class="o">-</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data_orig</span><span class="p">[</span><span class="n">keyx</span><span class="p">])</span><span class="o">+</span><span class="mf">2.5</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="n">plt_xmin</span><span class="p">,</span><span class="n">plt_xmax</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ax</span>
+
+        <span class="k">if</span> <span class="n">outfile</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">fmt</span><span class="p">:</span>
+                <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">fmt</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">show</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">fig</span></div>
+
+
+<div class="viewcode-block" id="DispersionCurve.plotColumn">
+<a class="viewcode-back" href="../../pyswapp.html#pyswapp.curve.DispersionCurve.plotColumn">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plotColumn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;plot dispersion curve data as 1D column to construct pseudosection&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">figure</span>
+
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">plot_vphase</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">f</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">frequency</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">lam</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ax</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">outfile</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">fmt</span><span class="p">:</span>
+                <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">fmt</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">show</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fig</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, pySWAPP contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

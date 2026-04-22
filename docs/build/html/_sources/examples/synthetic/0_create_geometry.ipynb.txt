@@ -1,0 +1,89 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "9354cae8-0679-4675-9bc7-8c47174d786a",
+   "metadata": {},
+   "source": [
+    "# 1. geometry file generation"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "5c2679f1-299c-4c9a-ad42-4fff974aedaa",
+   "metadata": {},
+   "source": [
+    "Create the geometry file automatically if the seismic raw data contains information on source & receiver location."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "26000dc8-2ebe-4dcb-a5b7-edda920661f5",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from pyswapp import *"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ba5bcfa3-a9e5-4c29-bf43-cca2fb8101e5",
+   "metadata": {},
+   "source": [
+    "#### 1. Set the directories"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "5f4514ea-69a8-4336-8183-25693fa6a527",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "prj_dir = '../../data/syn_data' # project directory\n",
+    "path2raw = os.path.join(prj_dir,'raw') # path to raw data\n",
+    "path2geom = f'{prj_dir}/geometry.csv' # path where geometry file should be stored"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "77103bfe-9089-42d7-a51d-38a3fe740cc2",
+   "metadata": {},
+   "source": [
+    "#### 2. Call the utilities function"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "00c23bcb-fe03-45e2-9bec-5530562191cd",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "create_geometry(path2raw, path2geom=path2geom)"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "pyswapp",
+   "language": "python",
+   "name": "pyswapp"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.23"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

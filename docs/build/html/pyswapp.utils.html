@@ -1,0 +1,820 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyswapp.utils package &mdash; pySWApp 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="pyswapp package" href="pyswapp.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pySWApp
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pySWApp</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pyswapp.html">pyswapp package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="pyswapp.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">pyswapp.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyswapp.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyswapp.html#module-pyswapp.curve">pyswapp.curve module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyswapp.html#module-pyswapp.curves">pyswapp.curves module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyswapp.html#module-pyswapp.manager">pyswapp.manager module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyswapp.html#module-pyswapp.qtapps">pyswapp.qtapps module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyswapp.html#module-pyswapp.stream">pyswapp.stream module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyswapp.html#module-pyswapp">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="credits.html">Credits</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pySWApp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">pySWApp</a></li>
+          <li class="breadcrumb-item"><a href="pyswapp.html">pyswapp package</a></li>
+      <li class="breadcrumb-item active">pyswapp.utils package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pyswapp.utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pyswapp-utils-package">
+<h1>pyswapp.utils package<a class="headerlink" href="#pyswapp-utils-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pyswapp.utils.interactive">
+<span id="pyswapp-utils-interactive-module"></span><h2>pyswapp.utils.interactive module<a class="headerlink" href="#module-pyswapp.utils.interactive" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyswapp.utils.interactive.DCPickingInteractive">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyswapp.utils.interactive.</span></span><span class="sig-name descname"><span class="pre">DCPickingInteractive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">picks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/interactive.html#DCPickingInteractive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.interactive.DCPickingInteractive" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyswapp.utils.interactive.DraggablePoints" title="pyswapp.utils.interactive.DraggablePoints"><code class="xref py py-class docutils literal notranslate"><span class="pre">DraggablePoints</span></code></a></p>
+<p>class for drawing boundaries for dispersion curve extraction</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.interactive.DCPickingInteractive.interact">
+<span class="sig-name descname"><span class="pre">interact</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/interactive.html#DCPickingInteractive.interact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.interactive.DCPickingInteractive.interact" title="Link to this definition"></a></dt>
+<dd><p>extract dispersion curve within boundary</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyswapp.utils.interactive.DCPickingInteractive.picks">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">picks</span></span><a class="headerlink" href="#pyswapp.utils.interactive.DCPickingInteractive.picks" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyswapp.utils.interactive.DCPickingInteractive.polygons">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">polygons</span></span><a class="headerlink" href="#pyswapp.utils.interactive.DCPickingInteractive.polygons" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyswapp.utils.interactive.DraggablePoints">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyswapp.utils.interactive.</span></span><span class="sig-name descname"><span class="pre">DraggablePoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/interactive.html#DraggablePoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.interactive.DraggablePoints" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pyswapp.utils.interactive.DraggablePoints.points">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">points</span></span><a class="headerlink" href="#pyswapp.utils.interactive.DraggablePoints.points" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyswapp.utils.interactive.FKFilterInteractive">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyswapp.utils.interactive.</span></span><span class="sig-name descname"><span class="pre">FKFilterInteractive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">picks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/interactive.html#FKFilterInteractive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.interactive.FKFilterInteractive" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyswapp.utils.interactive.DraggablePoints" title="pyswapp.utils.interactive.DraggablePoints"><code class="xref py py-class docutils literal notranslate"><span class="pre">DraggablePoints</span></code></a></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pyswapp.utils.interactive.FKFilterInteractive.key">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">key</span></span><a class="headerlink" href="#pyswapp.utils.interactive.FKFilterInteractive.key" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyswapp.utils.interactive.FKFilterInteractive.picks">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">picks</span></span><a class="headerlink" href="#pyswapp.utils.interactive.FKFilterInteractive.picks" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyswapp.utils.interactive.FKFilterInteractive.terminate">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">terminate</span></span><a class="headerlink" href="#pyswapp.utils.interactive.FKFilterInteractive.terminate" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.interactive.FKFilterInteractive.update_plot">
+<span class="sig-name descname"><span class="pre">update_plot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/interactive.html#FKFilterInteractive.update_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.interactive.FKFilterInteractive.update_plot" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyswapp.utils.interactive.TXInteractive">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyswapp.utils.interactive.</span></span><span class="sig-name descname"><span class="pre">TXInteractive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">receiver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">picks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/interactive.html#TXInteractive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.interactive.TXInteractive" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyswapp.utils.interactive.DraggablePoints" title="pyswapp.utils.interactive.DraggablePoints"><code class="xref py py-class docutils literal notranslate"><span class="pre">DraggablePoints</span></code></a></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pyswapp.utils.interactive.TXInteractive.key">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">key</span></span><a class="headerlink" href="#pyswapp.utils.interactive.TXInteractive.key" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyswapp.utils.interactive.TXInteractive.picks">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">picks</span></span><a class="headerlink" href="#pyswapp.utils.interactive.TXInteractive.picks" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyswapp.utils.interactive.TXInteractive.reset">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reset</span></span><a class="headerlink" href="#pyswapp.utils.interactive.TXInteractive.reset" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyswapp.utils.interactive.TXInteractive.reset_last">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reset_last</span></span><a class="headerlink" href="#pyswapp.utils.interactive.TXInteractive.reset_last" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyswapp.utils.interactive.TXInteractive.terminate">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">terminate</span></span><a class="headerlink" href="#pyswapp.utils.interactive.TXInteractive.terminate" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.interactive.TXInteractive.update_plot">
+<span class="sig-name descname"><span class="pre">update_plot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/interactive.html#TXInteractive.update_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.interactive.TXInteractive.update_plot" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pyswapp.utils.inversion">
+<span id="pyswapp-utils-inversion-module"></span><h2>pyswapp.utils.inversion module<a class="headerlink" href="#module-pyswapp.utils.inversion" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.inversion.compute_chi2">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.inversion.</span></span><span class="sig-name descname"><span class="pre">compute_chi2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/inversion.html#compute_chi2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.inversion.compute_chi2" title="Link to this definition"></a></dt>
+<dd><p>compute rms and chi^2</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.inversion.lambda_search">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.inversion.</span></span><span class="sig-name descname"><span class="pre">lambda_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dphi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/inversion.html#lambda_search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.inversion.lambda_search" title="Link to this definition"></a></dt>
+<dd><p>Search for optimum weight</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f</strong> (<em>float</em><em>, </em><em>frequency value</em><em> of </em><em>the analysis</em>)</p></li>
+<li><p><strong>A</strong> (<em>np.ndarray</em><em>, </em><em>design matrix</em>)</p></li>
+<li><p><strong>dphi</strong> (<em>np.ndarray</em><em>, </em><em>phase differences</em>)</p></li>
+<li><p><strong>w</strong> (<em>np.ndarray</em><em>, </em><em>weights</em>)</p></li>
+<li><p><strong>scale</strong> (<em>float</em><em>, </em><em>percentage value to decrease lambda</em>)</p></li>
+<li><p><strong>lam_max</strong> (<em>int</em><em>, </em><em>maximum value</em><em> of </em><em>lambda</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>lam</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int, optimal lambda</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.inversion.linear_LSQR">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.inversion.</span></span><span class="sig-name descname"><span class="pre">linear_LSQR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/inversion.html#linear_LSQR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.inversion.linear_LSQR" title="Link to this definition"></a></dt>
+<dd><p>Estimate coefficients of a line y = k*x+phi0</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.ndarray</em><em>, </em><em>offsets</em>)</p></li>
+<li><p><strong>y</strong> (<em>np.ndarray</em><em>, </em><em>phases</em>)</p></li>
+<li><p><strong>w</strong> (<em>np.ndarray</em><em>, </em><em>weights</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>k</strong> (<em>float, wavenumber</em>)</p></li>
+<li><p><strong>phi0</strong> (<em>float, shift</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.inversion.phase_response">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.inversion.</span></span><span class="sig-name descname"><span class="pre">phase_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/inversion.html#phase_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.inversion.phase_response" title="Link to this definition"></a></dt>
+<dd><p>return the phase</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.inversion.tomo2D_phasediff">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.inversion.</span></span><span class="sig-name descname"><span class="pre">tomo2D_phasediff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dphi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/inversion.html#tomo2D_phasediff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.inversion.tomo2D_phasediff" title="Link to this definition"></a></dt>
+<dd><p>Tomographic like approach (Barone et al., 2019)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lam</strong> (<em>int</em><em>, </em><em>regularization strength</em>)</p></li>
+<li><p><strong>f</strong> (<em>float</em><em>, </em><em>frequency value</em><em> of </em><em>the analysis</em>)</p></li>
+<li><p><strong>A</strong> (<em>np.ndarray</em><em>, </em><em>design matrix</em>)</p></li>
+<li><p><strong>dphi</strong> (<em>np.ndarray</em><em>, </em><em>phase differences</em>)</p></li>
+<li><p><strong>w</strong> (<em>np.ndarray</em><em>, </em><em>weights</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>phi_vel</strong> (<em>np.ndarray, phase velocities</em>)</p></li>
+<li><p><strong>phi_model</strong> (<em>np.ndarray, predicted phase differences</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pyswapp.utils.physics">
+<span id="pyswapp-utils-physics-module"></span><h2>pyswapp.utils.physics module<a class="headerlink" href="#module-pyswapp.utils.physics" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.physics.frequency">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.physics.</span></span><span class="sig-name descname"><span class="pre">frequency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lam</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/physics.html#frequency"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.physics.frequency" title="Link to this definition"></a></dt>
+<dd><p>compute frequency</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.physics.lorentzian_err">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.physics.</span></span><span class="sig-name descname"><span class="pre">lorentzian_err</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offsets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nchannels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">24</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/physics.html#lorentzian_err"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.physics.lorentzian_err" title="Link to this definition"></a></dt>
+<dd><p>Estimate dispersion-curve uncertainty after O’Neill et al. (2003).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>offsets</strong> (<em>array-like</em><em> or </em><em>None</em>) – Receiver offsets. If provided, dx and nchannels are inferred from it.</p></li>
+<li><p><strong>vel</strong> (<em>float</em><em> or </em><em>array-like</em>) – Phase velocity.</p></li>
+<li><p><strong>f</strong> (<em>float</em><em> or </em><em>array-like</em>) – Frequency.</p></li>
+<li><p><strong>nchannels</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of channels (ignored if offsets provided).</p></li>
+<li><p><strong>dx</strong> (<em>float</em><em>, </em><em>optional</em>) – Receiver spacing (ignored if offsets provided).</p></li>
+<li><p><strong>maxerr</strong> (<em>float</em>) – Maximum relative velocity error (e.g., 0.4 means ≤40% of velocity).</p></li>
+<li><p><strong>minvelerr</strong> (<em>float</em>) – Minimum absolute velocity error (m/s).</p></li>
+<li><p><strong>a</strong> (<em>float</em>) – Parameter controlling error-bar tightening.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>deltac</strong> – Estimated dispersion-curve error.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float or np.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<p>O’Neill, A., Dentith, M., &amp; List, R., 2003. Full-waveform P-SV
+reflectivity inversion of surface waves for shallow engineering
+applications, Exploration Geophysics, 34(3), 158–173.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.physics.phase_velocity">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.physics.</span></span><span class="sig-name descname"><span class="pre">phase_velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/physics.html#phase_velocity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.physics.phase_velocity" title="Link to this definition"></a></dt>
+<dd><p>compute phase velocity</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.physics.slowness">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.physics.</span></span><span class="sig-name descname"><span class="pre">slowness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/physics.html#slowness"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.physics.slowness" title="Link to this definition"></a></dt>
+<dd><p>compute seismic slowness</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.physics.wavelength">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.physics.</span></span><span class="sig-name descname"><span class="pre">wavelength</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/physics.html#wavelength"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.physics.wavelength" title="Link to this definition"></a></dt>
+<dd><p>compute wavelength</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.physics.wavenumber">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.physics.</span></span><span class="sig-name descname"><span class="pre">wavenumber</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/physics.html#wavenumber"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.physics.wavenumber" title="Link to this definition"></a></dt>
+<dd><p>compute wavenumber</p>
+</dd></dl>
+
+</section>
+<section id="module-pyswapp.utils.plot_settings">
+<span id="pyswapp-utils-plot-settings-module"></span><h2>pyswapp.utils.plot_settings module<a class="headerlink" href="#module-pyswapp.utils.plot_settings" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pyswapp.utils.plotting">
+<span id="pyswapp-utils-plotting-module"></span><h2>pyswapp.utils.plotting module<a class="headerlink" href="#module-pyswapp.utils.plotting" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.plotting.calculate_new_limit">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.plotting.</span></span><span class="sig-name descname"><span class="pre">calculate_new_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/plotting.html#calculate_new_limit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.plotting.calculate_new_limit" title="Link to this definition"></a></dt>
+<dd><p>Calculates the min/max of the dependent axis given
+a fixed axis with limits</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.plotting.discrete_cmap">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.plotting.</span></span><span class="sig-name descname"><span class="pre">discrete_cmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/plotting.html#discrete_cmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.plotting.discrete_cmap" title="Link to this definition"></a></dt>
+<dd><p>Create an N-bin discrete colormap from the specified input map</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.plotting.draw1DColumn">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.plotting.</span></span><span class="sig-name descname"><span class="pre">draw1DColumn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/plotting.html#draw1DColumn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.plotting.draw1DColumn" title="Link to this definition"></a></dt>
+<dd><p>draw a 1D column based on thicknesses or depths</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.plotting.get_xy">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.plotting.</span></span><span class="sig-name descname"><span class="pre">get_xy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artist</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/plotting.html#get_xy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.plotting.get_xy" title="Link to this definition"></a></dt>
+<dd><p>get the xy coordinates of a given artist</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.plotting.plot_colorBar">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_colorBar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vertical'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/plotting.html#plot_colorBar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.plotting.plot_colorBar" title="Link to this definition"></a></dt>
+<dd><p>create and plot a colorbar</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.plotting.plot_tomo2D">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_tomo2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dphi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recs_plot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi_vel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/plotting.html#plot_tomo2D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.plotting.plot_tomo2D" title="Link to this definition"></a></dt>
+<dd><p>plot tomographic like approach</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.plotting.plot_vphase">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_vphase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lam'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/plotting.html#plot_vphase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.plotting.plot_vphase" title="Link to this definition"></a></dt>
+<dd><p>draw dispersion curve as 1D column</p>
+</dd></dl>
+
+</section>
+<section id="module-pyswapp.utils.settings">
+<span id="pyswapp-utils-settings-module"></span><h2>pyswapp.utils.settings module<a class="headerlink" href="#module-pyswapp.utils.settings" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.settings.create_settings">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.settings.</span></span><span class="sig-name descname"><span class="pre">create_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zero_padding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velstep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SFR_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_power</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_max_power</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_min_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_max_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_move_increment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/settings.html#create_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.settings.create_settings" title="Link to this definition"></a></dt>
+<dd><p>create settings dictionary</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>zero_padding</strong> (<em>bool</em><em>, </em><em>add zeros to increase signal length</em>)</p></li>
+<li><p><strong>freq_step</strong> (<em>int</em><em>, </em><em>desired frequency step for zero padding</em>)</p></li>
+<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>normalize amplitudes</em>)</p></li>
+<li><p><strong>local_max</strong> (<em>bool</em><em>, </em><em>normalize each trace based on local maximum</em>)</p></li>
+<li><p><strong>fmin</strong> (<em>float</em><em>, </em><em>minimum frequency to analyse</em>)</p></li>
+<li><p><strong>fmax</strong> (<em>float</em><em>, </em><em>maximum frequency to analyse</em>)</p></li>
+<li><p><strong>vmin</strong> (<em>float</em><em>, </em><em>minimum testing velocity</em>)</p></li>
+<li><p><strong>vmax</strong> (<em>float</em><em>, </em><em>maximum testing velocity</em>)</p></li>
+<li><p><strong>velstep</strong> (<em>float</em><em>, </em><em>velocity increment</em>)</p></li>
+<li><p><strong>SFR_time</strong> (<em>float</em><em>, </em><em>time for computing swept-frequency record</em><em> (</em><em>SFR</em><em>)</em>)</p></li>
+<li><p><strong>kmin</strong> (<em>float</em><em>, </em><em>minimum wavenumber</em>)</p></li>
+<li><p><strong>kmax</strong> (<em>float</em><em>, </em><em>maximum wavenumber</em>)</p></li>
+<li><p><strong>normalize_power</strong> (<em>bool</em><em>, </em><em>normalize amplitudes</em>)</p></li>
+<li><p><strong>local_max_power</strong> (<em>bool</em><em>, </em><em>normalize each trace based on local maximum</em>)</p></li>
+<li><p><strong>window_length</strong> (<em>int</em><em>, </em><em>spatial window length</em>)</p></li>
+<li><p><strong>window_min_offset</strong> (<em>float</em><em>, </em><em>minimum offset to exclude near-field</em>)</p></li>
+<li><p><strong>window_max_offset</strong> (<em>float</em><em>, </em><em>maximum offset to exclude near-field</em>)</p></li>
+<li><p><strong>window_move_increment</strong> (<em>int</em><em>, </em><em>move increment</em><em> of </em><em>spatial window</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pyswapp.utils.sql">
+<span id="pyswapp-utils-sql-module"></span><h2>pyswapp.utils.sql module<a class="headerlink" href="#module-pyswapp.utils.sql" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyswapp.utils.sql.</span></span><span class="sig-name descname"><span class="pre">SQL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Handle an SQLite database.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.array_to_blob">
+<span class="sig-name descname"><span class="pre">array_to_blob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.array_to_blob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.array_to_blob" title="Link to this definition"></a></dt>
+<dd><p>Serialize ndarray to BLOB.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.blob_to_array">
+<span class="sig-name descname"><span class="pre">blob_to_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blob</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.blob_to_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.blob_to_array" title="Link to this definition"></a></dt>
+<dd><p>Deserialize SQLite BLOB to numpy array.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.check_data">
+<span class="sig-name descname"><span class="pre">check_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.check_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.check_data" title="Link to this definition"></a></dt>
+<dd><p>Check if entry exists already in database.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.delete_data">
+<span class="sig-name descname"><span class="pre">delete_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.delete_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.delete_data" title="Link to this definition"></a></dt>
+<dd><p>Delete entry from database.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.drop_table">
+<span class="sig-name descname"><span class="pre">drop_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.drop_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.drop_table" title="Link to this definition"></a></dt>
+<dd><p>Drop table.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.duplicate_data">
+<span class="sig-name descname"><span class="pre">duplicate_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.duplicate_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.duplicate_data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.get_connection">
+<span class="sig-name descname"><span class="pre">get_connection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.get_connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.get_connection" title="Link to this definition"></a></dt>
+<dd><p>Create database connection.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.get_geometry">
+<span class="sig-name descname"><span class="pre">get_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.get_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.get_geometry" title="Link to this definition"></a></dt>
+<dd><p>Return source/receiver coordinates for one source location and shot index.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.get_proc_labels">
+<span class="sig-name descname"><span class="pre">get_proc_labels</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.get_proc_labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.get_proc_labels" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.get_settings">
+<span class="sig-name descname"><span class="pre">get_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.get_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.get_settings" title="Link to this definition"></a></dt>
+<dd><p>Return the settings DataFrame</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.get_shotfile">
+<span class="sig-name descname"><span class="pre">get_shotfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.get_shotfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.get_shotfile" title="Link to this definition"></a></dt>
+<dd><p>Return the name of one shot file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.get_table">
+<span class="sig-name descname"><span class="pre">get_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.get_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.get_table" title="Link to this definition"></a></dt>
+<dd><p>Return a table form the database as DataFrame.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.get_tables">
+<span class="sig-name descname"><span class="pre">get_tables</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.get_tables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.get_tables" title="Link to this definition"></a></dt>
+<dd><p>Get all table names.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.get_trafo_labels">
+<span class="sig-name descname"><span class="pre">get_trafo_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">procset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_windows</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.get_trafo_labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.get_trafo_labels" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.get_wids">
+<span class="sig-name descname"><span class="pre">get_wids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">procset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.get_wids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.get_wids" title="Link to this definition"></a></dt>
+<dd><p>return the window ids for a sin/rep pair</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.group_pd">
+<span class="sig-name descname"><span class="pre">group_pd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">procset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'proc1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'AVG'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.group_pd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.group_pd" title="Link to this definition"></a></dt>
+<dd><p>Group repeated measurements for a given sin.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.read_FV">
+<span class="sig-name descname"><span class="pre">read_FV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">procset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'proc1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'phaseshift'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.read_FV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.read_FV" title="Link to this definition"></a></dt>
+<dd><p>read dispersive energy data from SQL table ‘dispersive_energy’</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.read_curve">
+<span class="sig-name descname"><span class="pre">read_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'*'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.read_curve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.read_curve" title="Link to this definition"></a></dt>
+<dd><p>Write dispersion curve data from SQL table ‘curves’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.read_curve_cc">
+<span class="sig-name descname"><span class="pre">read_curve_cc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'*'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.read_curve_cc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.read_curve_cc" title="Link to this definition"></a></dt>
+<dd><p>Write dispersion curve data from SQL table ‘curves’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.read_data">
+<span class="sig-name descname"><span class="pre">read_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">procset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'proc1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.read_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.read_data" title="Link to this definition"></a></dt>
+<dd><p>Read amplitude data from table ‘amplitudes’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.read_f_from_pd">
+<span class="sig-name descname"><span class="pre">read_f_from_pd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">procset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'proc1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NONE'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.read_f_from_pd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.read_f_from_pd" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.read_filter">
+<span class="sig-name descname"><span class="pre">read_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.read_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.read_filter" title="Link to this definition"></a></dt>
+<dd><p>Read filter from SQL table ‘filter’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.read_geometry">
+<span class="sig-name descname"><span class="pre">read_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.read_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.read_geometry" title="Link to this definition"></a></dt>
+<dd><p>Read geometry CSV file and populate geometry, shots, and receivers tables.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.read_pd">
+<span class="sig-name descname"><span class="pre">read_pd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">procset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'proc1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NONE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'*'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.read_pd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.read_pd" title="Link to this definition"></a></dt>
+<dd><p>Read phase-difference data from SQL table ‘phase_differences’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.read_setting">
+<span class="sig-name descname"><span class="pre">read_setting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.read_setting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.read_setting" title="Link to this definition"></a></dt>
+<dd><p>Read settings and add to database</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.read_sql">
+<span class="sig-name descname"><span class="pre">read_sql</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sql</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.read_sql"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.read_sql" title="Link to this definition"></a></dt>
+<dd><p>Write SQL query or table into DataFrame.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.show_tables">
+<span class="sig-name descname"><span class="pre">show_tables</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.show_tables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.show_tables" title="Link to this definition"></a></dt>
+<dd><p>Print all table names in the database.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.to_sql">
+<span class="sig-name descname"><span class="pre">to_sql</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">if_exists</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fail'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.to_sql"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.to_sql" title="Link to this definition"></a></dt>
+<dd><p>Write data stored in a DataFrame to a SQL database.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.wids_exist">
+<span class="sig-name descname"><span class="pre">wids_exist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">procset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.wids_exist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.wids_exist" title="Link to this definition"></a></dt>
+<dd><p>check if windows exist</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.write_FV">
+<span class="sig-name descname"><span class="pre">write_FV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">procset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'proc1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.write_FV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.write_FV" title="Link to this definition"></a></dt>
+<dd><p>write dispersive energy data to SQL table ‘dispersive_energy’</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.write_curve">
+<span class="sig-name descname"><span class="pre">write_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">procset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'proc1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.write_curve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.write_curve" title="Link to this definition"></a></dt>
+<dd><p>Write dispersion curve data to SQL table ‘curves’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.write_data">
+<span class="sig-name descname"><span class="pre">write_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">procset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.write_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.write_data" title="Link to this definition"></a></dt>
+<dd><p>Write amplitude data in TX domain to SQL table ‘amplitudes’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.write_filter">
+<span class="sig-name descname"><span class="pre">write_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'t'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">procset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'proc1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'FK'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.write_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.write_filter" title="Link to this definition"></a></dt>
+<dd><p>Write filter to SQL table ‘filter’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.SQL.write_pd">
+<span class="sig-name descname"><span class="pre">write_pd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pd_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rep</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">procset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'proc1'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#SQL.write_pd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.SQL.write_pd" title="Link to this definition"></a></dt>
+<dd><p>Write phase-difference data to SQL table ‘phase_differences’.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.StdevFunc">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyswapp.utils.sql.</span></span><span class="sig-name descname"><span class="pre">StdevFunc</span></span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#StdevFunc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.StdevFunc" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>SQLITE aggregate stdev.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.StdevFunc.finalize">
+<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#StdevFunc.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.StdevFunc.finalize" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyswapp.utils.sql.StdevFunc.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/sql.html#StdevFunc.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.sql.StdevFunc.step" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pyswapp.utils.utils">
+<span id="pyswapp-utils-utils-module"></span><h2>pyswapp.utils.utils module<a class="headerlink" href="#module-pyswapp.utils.utils" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.utils.assert_exists">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.utils.</span></span><span class="sig-name descname"><span class="pre">assert_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/utils.html#assert_exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.utils.assert_exists" title="Link to this definition"></a></dt>
+<dd><p>assert a path exists</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.utils.combine_dict">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.utils.</span></span><span class="sig-name descname"><span class="pre">combine_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/utils.html#combine_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.utils.combine_dict" title="Link to this definition"></a></dt>
+<dd><p>combine two dictionaries</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.utils.create_geometry">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.utils.</span></span><span class="sig-name descname"><span class="pre">create_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path2raw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path2geom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'geometry.csv'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyswapp/utils/utils.html#create_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.utils.create_geometry" title="Link to this definition"></a></dt>
+<dd><p>create a geometry.csv from seismic shot files (.sgy and .sg2 file formats)</p>
+<p>This function can be used to convert the source and geophone coordinate information contained
+in the seismic raw data to the geometry file format. The geometry file is a csv file that stores
+an abstract representation of the survey layout, that can be optionally passed to some modules.
+Check out docs/geometry_file.pdf for a description of the format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path2raw</strong> (<em>str</em><em>, </em><em>paths to shot files</em>)</p></li>
+<li><p><strong>path2geom</strong> (<em>str</em><em>, </em><em>path to geometry file</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.utils.create_logging">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.utils.</span></span><span class="sig-name descname"><span class="pre">create_logging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/utils.html#create_logging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.utils.create_logging" title="Link to this definition"></a></dt>
+<dd><p>create logger</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.utils.create_projectdir">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.utils.</span></span><span class="sig-name descname"><span class="pre">create_projectdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prjdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/utils.html#create_projectdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.utils.create_projectdir" title="Link to this definition"></a></dt>
+<dd><p>create project directory</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.utils.filter_df2dict">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.utils.</span></span><span class="sig-name descname"><span class="pre">filter_df2dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/utils.html#filter_df2dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.utils.filter_df2dict" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.utils.get_fileList">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.utils.</span></span><span class="sig-name descname"><span class="pre">get_fileList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path2raw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/utils.html#get_fileList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.utils.get_fileList" title="Link to this definition"></a></dt>
+<dd><p>get the paths to the shot files from the geometry.csv file</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.utils.get_num_from_str">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.utils.</span></span><span class="sig-name descname"><span class="pre">get_num_from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/utils.html#get_num_from_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.utils.get_num_from_str" title="Link to this definition"></a></dt>
+<dd><p>extract numbers from string</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.utils.get_shotfiles_from_geometry">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.utils.</span></span><span class="sig-name descname"><span class="pre">get_shotfiles_from_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path2raw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shot_files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.sg2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_ascending</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/utils.html#get_shotfiles_from_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.utils.get_shotfiles_from_geometry" title="Link to this definition"></a></dt>
+<dd><p>get the paths to the shot files from the geometry.csv file</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.utils.interp">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.utils.</span></span><span class="sig-name descname"><span class="pre">interp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yerr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cubic'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/utils.html#interp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.utils.interp" title="Link to this definition"></a></dt>
+<dd><p>interpolate data</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.utils.natural_sort">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.utils.</span></span><span class="sig-name descname"><span class="pre">natural_sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/utils.html#natural_sort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.utils.natural_sort" title="Link to this definition"></a></dt>
+<dd><p>sort list based on numbers in ascending order</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.utils.nextpow2">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.utils.</span></span><span class="sig-name descname"><span class="pre">nextpow2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/utils.html#nextpow2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.utils.nextpow2" title="Link to this definition"></a></dt>
+<dd><p>exponent of next higher power of 2</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.utils.print_inventory">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.utils.</span></span><span class="sig-name descname"><span class="pre">print_inventory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dct</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/utils.html#print_inventory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.utils.print_inventory" title="Link to this definition"></a></dt>
+<dd><p>print the dictionary items to console</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.utils.read_DC_csv">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.utils.</span></span><span class="sig-name descname"><span class="pre">read_DC_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/utils.html#read_DC_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.utils.read_DC_csv" title="Link to this definition"></a></dt>
+<dd><p>read a dispersion curve file from a csv file</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.utils.read_filter">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.utils.</span></span><span class="sig-name descname"><span class="pre">read_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/utils.html#read_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.utils.read_filter" title="Link to this definition"></a></dt>
+<dd><p>import existing filters from file</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.utils.rename_files">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.utils.</span></span><span class="sig-name descname"><span class="pre">rename_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path2raw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.sg2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prjdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_nr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/utils.html#rename_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.utils.rename_files" title="Link to this definition"></a></dt>
+<dd><p>copy &amp; optionally rename file for easier handling of geometry</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.utils.safe_makedirs">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.utils.</span></span><span class="sig-name descname"><span class="pre">safe_makedirs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/utils.html#safe_makedirs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.utils.safe_makedirs" title="Link to this definition"></a></dt>
+<dd><p>safe generation of directories</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.utils.save2csv">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.utils.</span></span><span class="sig-name descname"><span class="pre">save2csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">err</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/utils.html#save2csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.utils.save2csv" title="Link to this definition"></a></dt>
+<dd><p>save dispersion curve in csv format</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyswapp.utils.utils.write_filter">
+<span class="sig-prename descclassname"><span class="pre">pyswapp.utils.utils.</span></span><span class="sig-name descname"><span class="pre">write_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyswapp/utils/utils.html#write_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyswapp.utils.utils.write_filter" title="Link to this definition"></a></dt>
+<dd><p>export filter to file</p>
+</dd></dl>
+
+</section>
+<section id="module-pyswapp.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyswapp.utils" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pyswapp.html" class="btn btn-neutral float-left" title="pyswapp package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, pySWAPP contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
