@@ -3,6 +3,8 @@
 by
 Nathalie Roser, Ilaria Barone, Alberto Carrera and Adrian Flores Orozco
 
+[![Documentation](https://img.shields.io/badge/docs-online-blue)](https://albca.github.io/pyswapp_docs/)
+
 ---
 
 ## Abstract
