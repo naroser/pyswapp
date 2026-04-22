@@ -5,7 +5,8 @@ Welcome to pySWApp documentation!
    :maxdepth: 2
    :caption: Contents:
    
-   modules
+   getting_started
+   api
    examples
    credits
 
