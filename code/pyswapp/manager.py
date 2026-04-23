@@ -1,12 +1,7 @@
-import pandas as pd
-
 from .utils import *
 from .stream import SeismicStream
 from .curves import CombineCurves
 from .qtapps import *
-
-#TODO: filter based on radon domain
-#TODO: remove raw from db?
 
 class BaseManager:
     def __init__(self, prjdir, path2raw=None, path2geom=None, settings=None, database='swa.db', overwrite = False, **kwargs):
@@ -983,7 +978,14 @@ class BaseManager:
         self._save(procset, method,dc_mode, use_windows, **kwargs)
 
     def save_stream(self, procset=None):
-        """save stream in .mseed file format"""
+        """
+        Save currently selected streams in .mseed file format to disk
+
+        Parameters
+        ----------
+        procset : str, identifier to set on which dataset the processing should be applied to
+
+        """
 
         if procset is None:
             procset = self._procset
@@ -999,7 +1001,7 @@ class BaseManager:
 
     def save_streams(self, procset = None, apply_to = 'all'):
         """
-        Save streams in .mseed file format to disk
+        Save all streams of a procset in .mseed file format to disk
 
         Parameters
         ----------
