@@ -118,12 +118,12 @@ class BaseManager:
 
                     print('Creating figures for data preview mode ..... ', end="")
                     starttime = time.time()
-                    figures = self.get_figures()
+                    figures = self._get_figures()
                     endtime = time.time()
                     print(f'{np.round(endtime - starttime, 2)} s')
 
                     # data preview
-                    self.data_preview(figures)
+                    self._data_preview(figures)
 
         self.path2geom = os.path.join(self.prjdir, '02_geom/geometry.csv')
 
@@ -211,7 +211,16 @@ class BaseManager:
         self.selected_ids = (1, 1)
 
     def set_new_procset(self, procset = None, verbose = True):
-        """set the new active processing name"""
+        """
+        Set the new procset label
+
+        Parameters
+        ----------
+        procset : str, identifier to set on which dataset the processing should be applied to
+        verbose : bool, print information to console
+
+        """
+
         if (procset != 'raw') & (isinstance(procset,str)):
             self._procset = procset
             if verbose:
@@ -223,18 +232,35 @@ class BaseManager:
                                     'Setting to default label "proc1".')
 
     def set_procset_label(self, procset = None, verbose = True):
-        """set the new active processing name"""
+        """
+        Set the new procset label
+
+        Parameters
+        ----------
+        procset : str, identifier to set on which dataset the processing should be applied to
+        verbose : bool, print information to console
+
+        """
+
         self.set_new_procset(procset , verbose)
 
-    def set_loadset(self, procset = None):
-        """set the loadset label, i.e. which dataset to load"""
+    def _set_loadset(self, procset = None):
+        """Set the procset label, i.e. which dataset should be loaded"""
+
         if isinstance(procset,str):
             self._loadset = procset
         else:
             self._loadset = 'proc1'
 
     def load_procset(self, procset = None, **kwargs):
-        """load processed data from database"""
+        """
+        Load a specific procset from the database
+
+        Parameters
+        ----------
+        procset : str, identifier to set on which dataset the processing should be applied to
+
+        """
 
         if not isinstance(procset, str):
             self.logger.warning('Procset label needs to be a string.')
@@ -318,7 +344,17 @@ class BaseManager:
         print(f'Read {nfiles} files and applied geometry and settings.')
 
     def print_stats(self, which = 'stream'):
-        """print stream information"""
+        """
+        Print stream information
+
+        Parameters
+        ----------
+        which : str, can be set to 'stream', 'trace' or 'both' to define whether
+                     information about the whole stream to the individual
+                     traces should be printed to console
+
+        """
+
         stream = self.current_stream
         stream.print_stats(which)
 
@@ -394,6 +430,17 @@ class BaseManager:
             raise KeyError(f'The key sin = {sin} does not exist.')
 
     def delete(self, procset = None, table = 'amps', params = None):
+        """
+        Delete data from the database
+
+        Parameters
+        ----------
+        procset : str, identifier to set on which dataset the processing should be applied to
+        table : str, table in database that should be deleted
+        params : dict, additional rules on which rows should be deleted, e.g., only those associated
+                       with a specific shot index number (sin)
+
+        """
 
         if params is None:
             params = {}
@@ -426,7 +473,7 @@ class BaseManager:
 
     def preprocess(self, type, procset=None, use_windows = True, **kwargs):
         """
-        apply preprocessing steps to current selection or all data sets
+        Apply preprocessing steps to current selection or all data sets
 
         Parameters
         ----------
@@ -652,7 +699,7 @@ class BaseManager:
             endtime = time.time()
             print(f'{np.round(endtime - starttime, 2)} s')
 
-        self.set_loadset(procset)
+        self._set_loadset(procset)
 
     def _transform(self, method='phaseshift', procset=None, use_windows=True, **kwargs):
         """apply wavefield transformation to current selection or all data sets"""
@@ -676,7 +723,7 @@ class BaseManager:
 
     def transform(self, method='phaseshift', procset=None, use_windows=True, **kwargs):
         """
-        apply wavefield transformation to current selection or all data sets
+        Apply wavefield transformation to current selection or all data sets
 
         Parameters
         ----------
@@ -752,7 +799,7 @@ class BaseManager:
 
     def extract(self, procset=None, use_windows=True, method='max', **kwargs):
         """
-        apply dispersion curve extraction to a stream
+        Apply dispersion curve extraction to a stream
 
         Parameters
         ----------
@@ -817,14 +864,10 @@ class BaseManager:
         }
         return stream_kwargs
 
-    def process_curves(self, type, procset=None, method = None,
-                      dc_mode=0, use_windows=True, **kwargs):
-        self.process_curve(type, procset, method, dc_mode, use_windows, **kwargs)
-
     def process_curve(self, type, procset=None, method = None,
                       dc_mode=0, use_windows=True, **kwargs):
         """
-        apply a process to a dispersion curve
+        Apply a process to a dispersion curve
 
         Parameters
         ----------
@@ -926,7 +969,7 @@ class BaseManager:
 
     def save(self, procset=None, method = None,dc_mode=0, use_windows=True, **kwargs):
         """
-        save a dispersion curve for a defined source location, repetition and window id
+        Save a dispersion curve for a defined source location, repetition and window id
 
         Parameters
         ----------
@@ -955,7 +998,15 @@ class BaseManager:
         stream.save_stream(dir_path, pre)
 
     def save_streams(self, procset = None, apply_to = 'all'):
-        """save streams in .mseed file format"""
+        """
+        Save streams in .mseed file format to disk
+
+        Parameters
+        ----------
+        procset : str, identifier to set on which dataset the processing should be applied to
+        apply_to : str, default 'all', whether to apply function to all streams or just the current selection
+
+        """
 
         if procset is None:
             procset = self._procset
@@ -1024,7 +1075,7 @@ class BaseManager:
     def plot_curve(self, procset=None,
                    use_windows=True, method='phaseshift', **kwargs):
         """
-        plot a dispersion curve
+        Plot a dispersion curve
 
         Parameters
         ----------
@@ -1071,7 +1122,7 @@ class BaseManager:
 
     def plot_pseudosection(self, procset=None, **kwargs):
         """
-        plot the Rayleigh wave phase velocity pseudosection
+        Plot the Rayleigh wave phase velocity pseudosection
 
         Parameters
         ----------
@@ -1142,7 +1193,7 @@ class BaseManager:
 
     def plot(self, type='seismogram', procset = None, use_windows=True, **kwargs):
         """
-        plot portions of the stream data
+        Plot portions of the stream data
 
         Parameters
         ----------
@@ -1165,7 +1216,7 @@ class BaseManager:
 
         return None
 
-    def get_figures(self, type = ''):
+    def _get_figures(self, type = ''):
         """return plot for each data set"""
 
         figures = []
@@ -1178,7 +1229,7 @@ class BaseManager:
 
         return figures
 
-    def data_preview(self, figures):
+    def _data_preview(self, figures):
         """data preview modus"""
 
         window = FigureSwitcher(figures)
@@ -1199,7 +1250,7 @@ class BaseManager:
 
     def gui_interact(self, type='pick', domain = 'FV', procset = None, use_windows=True,**kwargs):
         """
-        interactive figure switcher
+        Interactive figure switcher
 
         Parameters
         ----------
@@ -1260,11 +1311,11 @@ class BaseManager:
 
         plt.close('all')
 
-        self.set_loadset(procset)
+        self._set_loadset(procset)
 
     def gui_view(self, type='', procset = None, use_windows=True,**kwargs):
         """
-        figure switcher
+        Static figure switcher
 
         Parameters
         ----------
@@ -1445,7 +1496,7 @@ class MASW2DManager(BaseManager):
             endtime = time.time()
             print(f'{np.round(endtime - starttime, 2)} s')
 
-        self.set_loadset(procset)
+        self._set_loadset(procset)
 
     def preprocess(self, type='trim', procset = None, apply_to = 'all', use_windows=True, **kwargs):
         """
@@ -1527,7 +1578,7 @@ class MASW2DManager(BaseManager):
             endtime = time.time()
             print(f'{np.round(endtime - starttime, 2)} s')
 
-        self.set_loadset(procset)
+        self._set_loadset(procset)
 
     def transform(self, method='phaseshift', procset = None, apply_to = 'all', use_windows=True, **kwargs):
         """
@@ -1810,7 +1861,7 @@ class MASW2DManager(BaseManager):
             endtime = time.time()
             print(f'{np.round(endtime - starttime, 2)} s')
 
-        self.set_loadset(procset)
+        self._set_loadset(procset)
 
     # %% curve combination
     def combine(self, procset = None, method = None, filter = True, dc_mode = 0, use_windows=True, **kwargs):
@@ -1866,7 +1917,7 @@ class MASW2DManager(BaseManager):
         print(f'{np.round(endtime - starttime, 2)} s')
 
     def filter_CC(self):
-        """Manually filter multiple dispersion curves"""
+        """Call application to manually filter multiple dispersion curves"""
 
         data = self.dcs_per_location
 
@@ -2170,7 +2221,7 @@ class Tomo2DManager(BaseManager):
             self.logger.warn("Some shot files didn't fulfill the user-defined near-/far-offset definition."
                              "\n No trimming was applied to those.")
 
-        self.set_loadset(procset)
+        self._set_loadset(procset)
 
     def preprocess_streams(self, type='trim', procset=None, apply_to='all', use_windows=True, **kwargs):
         """
@@ -2223,7 +2274,7 @@ class Tomo2DManager(BaseManager):
             endtime = time.time()
             print(f'{np.round(endtime - starttime, 2)} s')
 
-        self.set_loadset(procset)
+        self._set_loadset(procset)
 
     def preprocess(self, type='trim', procset=None, apply_to='all', use_windows=True, **kwargs):
         """
@@ -2328,7 +2379,7 @@ class Tomo2DManager(BaseManager):
             endtime = time.time()
             print(f'{np.round(endtime - starttime, 2)} s')
 
-        self.set_loadset(procset)
+        self._set_loadset(procset)
 
     def run(self, min_offset=3, max_offset=1e6, lam = 1, abs_err = None, rel_err = None, procset = None,
             opt_lam = False, scale = 0.6, lam_max = 200, **kwargs):
