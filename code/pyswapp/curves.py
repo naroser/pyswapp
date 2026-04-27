@@ -15,7 +15,21 @@ class CombineCurves:
         self.data = data
 
     def _binning(self, lam_vec, vel_vec, lam_min = 1, lam_max = 150, a=3, minvelerr=None):
-        """combination of dispersion curves from SW measurements (Olafsdottir, 2018)
+        """
+        Combination of dispersion curves from SW measurements (Olafsdottir, 2018)
+
+        Parameters
+        ----------
+        lam_vec : ndarray, vector containing wavelengths
+        vel_vec : ndarray, vector containing velocities
+        lam_min : float, minium wavelength, i.e., lower bound
+        lam_max : float, maximum wavelength, i.e., upper bound
+        a : int, parameter controlling the length and range of the wavelength intervals
+        minvelerr : float, optional, set a minimum velocity error
+
+        Returns
+        -------
+        ndarray, ndarray, ndarray
 
         References
         ----------
@@ -64,8 +78,24 @@ class CombineCurves:
 
         return f_mean, vel_mean, vel_std
 
-    def _resample(self, data, pmin = 1, pmax = 100, pn = 30,pspace = 'log', kind = 'cubic'):
-        """resample all curves"""
+    def _resample(self, data, pmin = 1, pmax = 100, pn = 30, pspace = 'log', kind = 'cubic'):
+        """
+        Resample all curves
+
+        Parameters
+        ----------
+        data : DataFrame, all curves of the current procset read from the database
+        pmin : float, minimum value
+        pmax : float, maximum value
+        pn : int, number of points
+        pspace : str, default 'log', scale
+        kind : str, default 'cubic', specifies the kind of interpolation
+
+        Returns
+        -------
+        DataFrame
+
+        """
 
         if pspace == 'log':
             parx_new = np.geomspace(pmin, pmax, pn)
@@ -94,7 +124,19 @@ class CombineCurves:
         return pd.concat(resampled_list, ignore_index=True)
 
     def _resample_and_average(self,data,**kwargs):
-        """compute the mean of all curves"""
+        """
+        Resample curves and compute the mean of all curves associated with the receiver spread midpoint
+
+        Parameters
+        ----------
+        data : DataFrame, all curves of the current procset read from the database
+        kwargs : arguments for the resampling
+
+        Returns
+        -------
+        ndarray, ndarray, ndarray
+
+        """
 
         data_resampled = self._resample(data, **kwargs)
 
@@ -103,8 +145,21 @@ class CombineCurves:
 
         return stats['frequency'].to_numpy(), stats['velocity_mean'].to_numpy(), stats['velocity_std'].to_numpy()
 
-    def combination(self, combination_method = 'binning', axes = None, show=True, **kwargs):
-        """run combination of dispersion curves"""
+    def combination(self, combination_method = 'binning',  show=True, **kwargs):
+        """
+        Run combination of dispersion curves
+
+        Parameters
+        ----------
+        combination_method : str, specify which combination strategy should be applied ('binning' or 'resampling')
+        show : bool, default True, show binning result
+        kwargs : arguments for the selected binning strategy
+
+        Returns
+        -------
+        curve object
+
+        """
 
         data = self.data
         x, y = data['frequency'].to_numpy(), data['velocity'].to_numpy()
@@ -134,11 +189,7 @@ class CombineCurves:
 
         # plot
         if show:
-            if axes is None:
-                fig, ax = plt.subplots(figsize=(6, 4))
-            else:
-                ax = axes
-                fig = ax.figure
+            fig, ax = plt.subplots(figsize=(6, 4))
 
             ax.scatter(x, y, color="royalblue", s=20, label = 'data')
 

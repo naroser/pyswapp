@@ -34,11 +34,37 @@ def linear_LSQR(x,y,w=None):
     return k, phi0
 
 def phase_response(x, k, phi0):
-    """return the phase"""
+    """
+    Return the phase
+
+    Parameters
+    ----------
+    x : np.ndarray, offsets
+    k : float, wavenumber
+    phi0 : float, shift
+
+    Returns
+    -------
+    ndarray
+
+    """
     return -k * x + phi0
 
 def compute_chi2(data, resp, error):
-    """compute rms and chi^2"""
+    """
+    Compute rms and chi^2
+
+    Parameters
+    ----------
+    data : ndarray, data
+    resp : ndarray, model response
+    error : ndarray, data error estimates
+
+    Returns
+    -------
+    float, float, float
+
+    """
     misfit = data - resp
     error_weighted_misfit = np.abs(misfit) / error
 

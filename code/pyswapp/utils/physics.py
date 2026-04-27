@@ -3,27 +3,87 @@ import numpy as np
 
 # %% physics
 def wavenumber(f,vel):
-    """compute wavenumber"""
+    """
+    Compute the wavenumber
+
+    Parameters
+    ----------
+    f : float or array-like, frequencies
+    vel : float or array-like, velocities
+
+    Returns
+    -------
+    float or array-like
+
+    """
     return 2*np.pi*f/vel
 
 
 def phase_velocity(f,k):
-    """compute phase velocity"""
+    """
+    Compute phase velocity
+
+    Parameters
+    ----------
+    f : float or array-like, frequencies
+    k : float or array-like, wavenumbers
+
+    Returns
+    -------
+    float or array-like
+
+    """
     return 2*np.pi*f/k
 
 
 def slowness(vel):
-    """compute seismic slowness"""
+    """
+    Compute seismic slowness
+
+    Parameters
+    ----------
+    f : float or array-like, frequencies
+    vel : float or array-like, velocities
+
+    Returns
+    -------
+    float or array-like
+
+    """
     return 1./vel
 
 
 def wavelength(f,vel):
-    """compute wavelength"""
+    """
+    Compute wavelength
+
+    Parameters
+    ----------
+    f : float or array-like, frequencies
+    vel : float or array-like, velocities
+
+    Returns
+    -------
+    float or array-like
+
+    """
     return vel/f
 
 
 def frequency(lam,vel):
-    """compute frequency"""
+    """
+    Compute frequency
+
+    Parameters
+    ----------
+    lam : float or array-like, wavelengths
+    vel : float or array-like, velocities
+
+    Returns
+    -------
+    float or array-like
+
+    """
     return vel/lam
 
 
