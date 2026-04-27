@@ -68,7 +68,8 @@ Scripts and Jupyter Notebooks demonstrating various use cases
     Post-processing of dispersion curves.
 - **`real/`**
   Example code using the real data. 
-  - **`NB1_masw2D-window`**
+  - **`nb1_masw2D-window`**
+  - **`nb3_tomo2D.ipynb`**
   
 
 ---
