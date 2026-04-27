@@ -106,8 +106,8 @@ swam.select_data(sin=1, rep=1, inplace=True)
 
 # 3.4.1 Trimming
 
-# Cut traces outside of offset limits considering forward, reverse or both offset shots
-swam.preprocess(type = 'trim', by = 'offset', min = 5, max = 48, which = 'both')
+# Cut traces outside of offset limits considering forward or reverse offset shots
+swam.preprocess(type = 'trim', by = 'offset', min = 5, max = 48, which = 'forward')
 
 
 # Cut recording time based on top and bottom cut-off values (min and max, respectively)
