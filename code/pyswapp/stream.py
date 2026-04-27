@@ -4,11 +4,7 @@ import os.path
 from collections import OrderedDict
 import numbers
 
-import numpy as np
-from scipy import signal, special, sparse
-from scipy.interpolate import RegularGridInterpolator
-from scipy.fft import rfft, rfftfreq
-from scipy.linalg import solve
+from scipy import signal, special
 import obspy
 import obspy.signal
 
@@ -30,13 +26,13 @@ class SeismicStream:
     def __init__(self, fname, settings = None,
                  channel_nr=1001, pre_trigger=0):
         """
-        initialize stream class and settings
+        Initialize stream class and settings
 
         Parameters
         ----------
         fname : str, containing a file name
         settings : dict, settings
-        channel_nr : int, optional
+        channel_nr : int, optional, channel number
         pre_trigger : float, optional
         """
 
@@ -111,12 +107,12 @@ class SeismicStream:
 
     def read_data(self, fname, channel_nr = 1001, pre_trigger=0, extract_geometry = False):
         """
-        read a shotfile and extract relevant information
+        Read a shotfile and extract relevant information
 
         Parameters
         ----------
         fname : str, file name
-        channel_nr : int, optional
+        channel_nr : int, optional, channel number
         pre_trigger : float, optional
         extract_geometry : bool, True if geometry should be extracted, False otherwise
         """
@@ -148,7 +144,7 @@ class SeismicStream:
         Parameters
         ----------
         fname : str, file name
-        channel_nr : int, optional
+        channel_nr : int, optional, channel number
         """
 
         st_new = obspy.Stream()
@@ -197,7 +193,7 @@ class SeismicStream:
         Parameters
         ----------
         fname : str, file name
-        channel_nr : int, optional
+        channel_nr : int, optional, channel number
         """
 
         st_new = obspy.Stream()
@@ -208,10 +204,8 @@ class SeismicStream:
             scale = trace.stats.segy['trace_header']['scalar_to_be_applied_to_all_coordinates']
             sx_int = int(trace.stats.segy['trace_header']['source_coordinate_x'])
             sy_int = int(trace.stats.segy['trace_header']['source_coordinate_y'])
-            #sz_int = int(trace.stats.segy['trace_header']['source_coordinate_z'])
             rx_int = int(trace.stats.segy['trace_header']['group_coordinate_x'])
             ry_int = int(trace.stats.segy['trace_header']['group_coordinate_y'])
-            #rz_int = int(trace.stats.segy['trace_header']['group_coordinate_z'])
 
             if sx_int != 0:
                 sx = sx_int / abs(scale) if scale < 0 else sx_int * scale
@@ -339,7 +333,6 @@ class SeismicStream:
 
         for ti, trace in enumerate(st):
 
-            starttime = st[0].stats.starttime
             ch = str(channel_nr + ti)  # set channel number
             dt = trace.stats.delta  # sampling interval in s
             npts = trace.stats.npts  # number of samples
@@ -348,7 +341,6 @@ class SeismicStream:
 
             # new trace
             header = {
-                #'starttime': starttime,
                 'channel': ch,
                 'delta': dt,
                 'npts': npts,
@@ -360,7 +352,15 @@ class SeismicStream:
         self._st = st_new
 
     def apply_geometry(self, source_coordinates, receiver_coordinates):
-        """Apply the survey geometry to the seismic data"""
+        """
+        Apply the survey geometry to the seismic data
+
+        Parameters
+        ----------
+        source_coordinates : DataFrame, source coordinates stored in database
+        receiver_coordinates : DataFrame, receiver coordinates stored in database
+
+        """
 
         if self._pst is None:
             st = self._st.copy()
@@ -388,7 +388,15 @@ class SeismicStream:
         self.set_shot_params()
 
     def _create_st(self, amps, par):
-        """Create a new seismic stream"""
+        """
+        Create a new seismic stream
+
+        Parameters
+        ----------
+        amps : ndarray, amplitudes of waveform data
+        par : dict, field parameters
+
+        """
 
         st_new = obspy.Stream()
         for i,amp in enumerate(amps):
@@ -408,7 +416,18 @@ class SeismicStream:
         self.tapered_amps = par.tapered_amps.item()
 
     def update_pst(self,amps,sht,recs,par):
-        """update stream data"""
+        """
+        Update an existing seismic stream
+
+        Parameters
+        ----------
+        amps : ndarray, amplitudes of waveform data
+        sht : DataFrame, source coordinates stored in database
+        recs : DataFrame, receiver coordinates stored in database
+        par : dict, field parameters
+
+        """
+
         self._pst = self._st.copy()
         self._create_st(amps, par)
         self.apply_geometry(sht, recs)
@@ -416,10 +435,18 @@ class SeismicStream:
     def reset_pst(self):
         self._pst = None
 
-    ###################################################################################################################
-
     def _receiver(self, st=None):
-        """return sensor positions"""
+        """
+        Return sensor positions
+
+        Parameters
+        ----------
+        st : obspy stream object, optional
+
+        Returns
+        -------
+
+        """
 
         if st is None:
             if self._pst is None:
@@ -486,13 +513,28 @@ class SeismicStream:
         self.curve = None
 
     def _update_params_from_amps(self, amps):
-        """update npts and nchannels"""
+        """
+        Update size of waveform data
+
+        Parameters
+        ----------
+        amps : ndarray, amplitudes of waveform data
+
+        """
+
         nchannels,npts = amps.shape
         self.npts = npts
         self.nchannels = nchannels
 
     def _update_params_from_stream(self, st):
-        """update shot parameters"""
+        """
+        Update shot parameters
+
+        Parameters
+        ----------
+        st : obspy stream object, optional
+
+        """
         self.npts = len(st[0].data)
         self.nchannels = len(st)
 
@@ -503,6 +545,7 @@ class SeismicStream:
 
     def _return_stream(self):
         """return current stream object"""
+
         if self._pst is None:
             st = self._st.copy()
         else:
@@ -510,7 +553,16 @@ class SeismicStream:
         return st
 
     def print_stats(self, which = 'stream'):
-        """print stream information"""
+        """
+        Print stream information
+
+        Parameters
+        ----------
+        which : str, can be set to 'stream', 'trace' or 'both' to define whether
+                     information about the whole stream to the individual
+                     traces should be printed to console
+
+        """
 
         def pretty_print(header, data):
             row_format = "{:>15}" * (len(data) + 1)
@@ -554,7 +606,15 @@ class SeismicStream:
                     print(trace.stats)
 
     def save_stream(self, fot, pre):
-        """save stream in .mseed file format"""
+        """
+        Save stream in .mseed file format
+
+        Parameters
+        ----------
+        fot : str, file path
+        pre : str, shot file number
+
+        """
 
         safe_makedirs(fot)
         outfile = os.path.join(fot, f"Shot_{pre}.syn")
@@ -570,7 +630,14 @@ class SeismicStream:
         st.write(outfile, format='mseed')
 
     def _nchannels(self, st=None):
-        """return number of channels"""
+        """
+        Return number of channels
+
+        Parameters
+        ----------
+        st : obspy stream object, optional
+
+        """
 
         if st is None:
             if self._pst is None:
@@ -593,27 +660,85 @@ class SeismicStream:
         return len(self._amps()[0])
 
     def _midpoint(self, receiver):
-        """compute midpoint of a receiver spread"""
+        """
+        Compute midpoint of a receiver spread
+
+        Parameters
+        ----------
+        receiver : ndarray, receiver x-coordinates
+
+        Returns
+        -------
+        int
+
+        """
         return (np.max(receiver)+np.min(receiver))/2
 
     def _offsets(self, receiver, source):
-        """compute shot receiver offsets"""
+        """
+        Compute shot receiver offsets
+
+        Parameters
+        ----------
+        receiver : ndarray, receiver x-coordinates
+        source : int, source x-coordinate
+
+        Returns
+        -------
+        ndarray
+
+        """
         return source - receiver
 
     def _aoffsets(self, receiver, source):
-        """compute absolute shot receiver offsets"""
+        """
+        Compute absolute shot receiver offsets
+
+        Parameters
+        ----------
+        receiver : ndarray, receiver x-coordinates
+        source : int, source x-coordinate
+
+        Returns
+        -------
+        ndarray
+
+        """
+
         return abs(self._offsets(receiver, source))
 
     @property
     def offset(self):
+        """shot receiver offsets"""
         return self._offsets(self.receiver,self.source)
 
     def _dx(self,receiver):
-        """compute receiver separations"""
+        """
+        Compute receiver separations
+
+        Parameters
+        ----------
+        receiver : ndarray, receiver x-coordinates
+
+        Returns
+        -------
+        float
+
+        """
+
         return np.diff(receiver)
 
     def check_traces(self, st=None):
-        """check whether a trace only contains zeros and remove it"""
+        """
+        Check whether a trace only contains zeros and remove it
+
+        Parameters
+        ----------
+        st : obspy stream object, optional
+
+        """
+
+
         if st is None:
 
             if self._pst is None:
@@ -630,15 +755,38 @@ class SeismicStream:
         self._remove_trace(trace_list)
 
     def st2amps(self, st = None):
-        """store amplitudes in ndarray (nchannels,nsamples)"""
+        """
+        Store amplitudes in ndarray (nchannels,nsamples)
+
+        Parameters
+        ----------
+        st : obspy stream object, optional
+
+        """
+
         return self._amps(st = st)
 
     def amps2st(self,amps,st = None):
-        """store amplitudes (nchannels,nsamples) as obspy stream data"""
+        """
+        Store amplitudes (nchannels,nsamples) as obspy stream data
+
+        Parameters
+        ----------
+        amps : ndarray, amplitudes of waveform data
+        st : obspy stream object, optional
+
+        """
         self._amps2st(amps, st = st)
 
     def _amps(self, st=None):
-        """store amplitudes in ndarray (nchannels,nsamples)"""
+        """
+        Store amplitudes in ndarray (nchannels,nsamples)
+
+        Parameters
+        ----------
+        st : obspy stream object, optional
+
+        """
 
         if st is None:
 
@@ -653,7 +801,15 @@ class SeismicStream:
         return amps
 
     def _amps2st(self,amps,st = None):
-        """store amplitudes (nchannels,nsamples) as obspy stream data"""
+        """
+        Store amplitudes (nchannels,nsamples) as obspy stream data
+
+        Parameters
+        ----------
+        amps : ndarray, amplitudes of waveform data
+        st : obspy stream object, optional
+
+        """
 
         if st is None:
             if self._pst is None:
@@ -672,7 +828,17 @@ class SeismicStream:
         self._pst = st_proc.copy()
 
     def resample(self, sampling_rate, window='hann', no_filter=True, strict_length=False):
-        """resample data in all traces using the method from obspy method"""
+        """
+        Resample data in all traces using the resample method from obspy
+
+        Parameters
+        ----------
+        sampling_rate : float, the sampling rate of the resampled signal
+        window : str, default 'hann', specifies the window applied to the signal in the Fourier domain
+        no_filter : bool, optional, default True, deactivates automatic filtering if set to True
+        strict_length : bool, optional, default False, leave traces unchanged for which end time of trace would change
+
+        """
 
         if self._pst is None:
             st_proc = self._st.copy()
@@ -685,7 +851,14 @@ class SeismicStream:
         self._pst = st_proc # update stream
 
     def _detrend_signal(self, amps):
-        """remove linear trend"""
+        """
+        Remove a linear trend
+
+        Parameters
+        ----------
+        amps : ndarray, amplitudes of waveform data
+
+        """
 
         detrend_amps = np.zeros_like(amps)
 
@@ -697,7 +870,15 @@ class SeismicStream:
         return detrend_amps
 
     def _normalize_amps(self, amps):
-        """amplitude normalization"""
+        """
+        Amplitude normalization
+
+        Parameters
+        ----------
+        amps : ndarray, amplitudes of waveform data
+
+        """
+
         norm_amps = np.zeros_like(amps)
         global_max = np.max(np.abs(amps))
 
@@ -715,7 +896,15 @@ class SeismicStream:
         return norm_amps
 
     def _apply_taper(self, st = None, inplace = True):
-        """apply taper"""
+        """
+        Apply window to signal in Fourier domain
+
+        Parameters
+        ----------
+        st : obspy stream object, optional
+        inplace : bool, default True, if True, perform operation in-place
+
+        """
 
         if st is None:
 
@@ -734,7 +923,18 @@ class SeismicStream:
 
 
     def _taper_amps(self, amps):
-        """apply taper window"""
+        """
+        Apply window to signal in Fourier domain
+
+        Parameters
+        ----------
+        amps : ndarray, amplitudes of waveform data
+
+        Returns
+        -------
+        ndarray
+
+        """
 
         taper_amps = np.zeros_like(amps)
         receiver = self.receiver
@@ -750,7 +950,7 @@ class SeismicStream:
         return taper_amps
 
     def _flip(self):
-        """reverse order of traces"""
+        """Reverse order of traces"""
         if self._pst is None:
             st_proc = self._st.copy()
         else:
@@ -761,7 +961,15 @@ class SeismicStream:
         self._pst = st_proc
 
     def trim(self, by, **kwargs):
-        """non interactive time or offset based trimming of the trace data"""
+        """
+        Non interactive time or offset based trimming of the trace data
+
+        Parameters
+        ----------
+        by : str, specify trim function
+        kwargs : specific parameters for the trim function
+
+        """
 
         if by == 'time':
             min = kwargs.setdefault('min', 0)
@@ -793,8 +1001,16 @@ class SeismicStream:
             print(f'Preprocessing function "{by}" not implemented.')
 
     def _trim_times_obspy(self, start_cut_off, end_cut_off):
-        """cut times of stream by providing the amount of time that should be cut-off
-           at the beginning and end of the stream"""
+        """
+        Cut times of stream by providing the amount of time that should be cut-off
+        at the beginning and end of the stream
+
+        Parameters
+        ----------
+        start_cut_off : float, amount of time to cut off at the beginning
+        end_cut_off : float, amount of time to cut off at the end
+
+        """
 
         if self._pst is None:
             st_proc = self._st.copy()
@@ -812,7 +1028,15 @@ class SeismicStream:
             self.logger.warning(warn_msg)
 
     def _trim_times(self, start_time, end_time):
-        """cut times of stream by providing the start and end time of the stream"""
+        """
+        Cut times of stream by providing the start and end time of the stream
+
+        Parameters
+        ----------
+        start_time : float, specify the starttime
+        end_time : float, specify the endtime
+
+        """
 
         if self._pst is None:
             st = self._st.copy()
@@ -838,7 +1062,20 @@ class SeismicStream:
             self.logger.warning(warn_msg)
 
     def trim_by_offset(self, min_offset, max_offset, nrec = None):
-        """cut traces outside of the offsets limits"""
+        """
+        Cut traces outside of the offsets limits
+
+        Parameters
+        ----------
+        min_offset : float, minimum offset value
+        max_offset : float, maximum offset value
+        nrec : int, optional, minimum number of receivers to consider
+
+        Returns
+        -------
+        list
+
+        """
 
         if self._pst is None:
             st_proc = self._st.copy()
@@ -876,7 +1113,20 @@ class SeismicStream:
             return []
 
     def _trim_by_offset_both(self, min_offset, max_offset, which = 'forward'):
-        """cut traces outside of the offset limits considering forward and reverse offset shot"""
+        """
+        Cut traces outside of the offset limits considering forward and reverse offset shot
+
+        Parameters
+        ----------
+        min_offset : float, minimum offset value
+        max_offset : float, maximum offset value
+        which : bool, default 'foward', whether to associate offset with a forward or reverse shot
+
+        Returns
+        -------
+        list, list
+
+        """
 
         if self._pst is None:
             st_proc = self._st.copy()
@@ -923,7 +1173,14 @@ class SeismicStream:
             return [], []
 
     def _trim_by_receiver_separation(self,sep):
-        """select channels with specified geophone separation"""
+        """
+        Select channels with specified geophone separation
+
+        Parameters
+        ----------
+        sep : float, desired receiver separation
+
+        """
 
         if self._pst is None:
             st_proc = self._st.copy()
@@ -954,7 +1211,15 @@ class SeismicStream:
             self.logger.warning(warn_msg)
 
     def _trim_by_trace_window(self, nwin, xmid):
-        """select traces around xmid and window size"""
+        """
+        Select traces around receiver spread midpoint and window size
+
+        Parameters
+        ----------
+        nwin : int, window size (number of traces)
+        xmid : float, receiver spread midpoint
+
+        """
 
         nchannels = self.nchannels
         nwin = int(nwin)
@@ -974,7 +1239,14 @@ class SeismicStream:
             self._select_traces(trace_select)
 
     def _select_traces(self, trace_indices):
-        """select a subset of a stream based on trace indices"""
+        """
+        Select a subset of a stream based on trace indices
+
+        Parameters
+        ----------
+        trace_indices : list, trace indices that should be selected
+
+        """
 
         if not isinstance(trace_indices, Iterable):
             if isinstance(trace_indices, int):
@@ -1001,7 +1273,14 @@ class SeismicStream:
         self._update_params_from_stream(st_new)
 
     def _remove_trace(self, trace_indices):
-        """remove a trace based on an index"""
+        """
+        Remove traces
+
+        Parameters
+        ----------
+        trace_indices : list, trace indices that should be deleted
+
+        """
 
         if not isinstance(trace_indices, Iterable):
             if isinstance(trace_indices, int):
@@ -1024,7 +1303,15 @@ class SeismicStream:
         self._update_params_from_stream(st_new)
 
     def filter(self, by, **kwargs):
-        """non-interactive FD based filtering of the trace data"""
+        """
+        Non interactive FD based filtering of the trace data
+
+        Parameters
+        ----------
+        by : str, specify filter function
+        kwargs : specific parameters for the filter function
+
+        """
 
         if by == 'frequency':
             type = kwargs.setdefault('filter_type', 'bandpass')
@@ -1051,7 +1338,16 @@ class SeismicStream:
             print(f'Preprocessing function "{by}" not implemented.')
 
     def _filter_freq(self, type, freqmin=None,freqmax=None):
-        """apply frequency filtering"""
+        """
+        Apply frequency filtering
+
+        Parameters
+        ----------
+        type : str, filter type
+        freqmin : float, minimum frequency
+        freqmax : float, maximum frequency
+
+        """
 
         if self._pst is None:
             st_proc = self._st.copy()
@@ -1083,7 +1379,14 @@ class SeismicStream:
         self._pst = st_proc
 
     def _reverse_polarity(self, trace_indices):
-        """reverse polarity of selected traces"""
+        """
+        Reverse polarity of selected traces
+
+        Parameters
+        ----------
+        trace_indices : list, trace indices for which polarity should be flipped
+
+        """
 
         if not isinstance(trace_indices, Iterable):
             if isinstance(trace_indices, int):
@@ -1104,7 +1407,14 @@ class SeismicStream:
         self._pst = st_proc
 
     def _mute_traces(self, trace_indices):
-        """set a trace to 0"""
+        """
+        Set amplitues of a trace to 0
+
+        Parameters
+        ----------
+        trace_indices : list, trace indices to mute
+
+        """
 
         if not isinstance(trace_indices, Iterable):
             if isinstance(trace_indices, int):
@@ -1133,7 +1443,7 @@ class SeismicStream:
         x_data : list, point list containing x data
         x_data : list, point list containing y data
         key :  str, which type of mute to apply ('t'-top, 'b'-bottom)
-        kwargs :
+        kwargs : arguments for taper strength
         """
 
         # tapering type and settings
@@ -1197,6 +1507,16 @@ class SeismicStream:
         self._pst = st_proc
 
     def linear_mute(self, points,key='t', **kwargs):
+        """
+        Linear muting
+
+        Parameters
+        ----------
+        points : list, points defining a line
+        key : str, which type of mute to apply ('t'-top, 'b'-bottom)
+        kwargs : arguments for taper strength
+
+        """
 
         # extract points from points_list
         if len(points) > 0:
@@ -1204,6 +1524,16 @@ class SeismicStream:
             self._linear_mute(x,y, key, **kwargs)
 
     def apply_linear_mute(self, points_list, key_list,**kwargs):
+        """
+        Apply linear muting to waveform data
+
+        Parameters
+        ----------
+        points_list : list, list of points defining individual lines for filtering
+        key_list : list, corresponding keys declaring whether top or bottom muting should be performed
+        kwargs : arguments for taper strength
+
+        """
 
         for points, key in zip(points_list, key_list):
             self.linear_mute(points,key, **kwargs)
@@ -1219,7 +1549,18 @@ class SeismicStream:
             self._pst = self._st_backup_last_mute
 
     def _zero_padding(self,amps):
-        """append zeros to amplitudes to achieve a desired resolution"""
+        """
+        Append zeros to amplitudes to achieve a desired resolution
+
+        Parameters
+        ----------
+        amps : ndarray, amplitudes of waveform data
+
+        Returns
+        -------
+        ndarray, int, int
+
+        """
 
         df = self.df
         dt = self.dt
@@ -1238,7 +1579,7 @@ class SeismicStream:
         return zero_padded_amps,padding,npts
 
     def argfreq(self):
-        """return the frequency ids of the selection"""
+        """Return the frequency ids of the selection"""
 
         dt = self.dt
 
@@ -1324,11 +1665,6 @@ class SeismicStream:
                 amps_lmo[i] = np.interp(t - bulk_shift, t - tlmo, amps[i])
 
             self._amps2st(amps=amps_lmo)
-
-    # def _dlmo(self):
-    #     """
-    #     dynamic linear moveout correction by Park et al. (1998)
-    #     """
 
     def _add_fk_data_to_dict(self,FK_data, theta, kw , freq, iX, iT):
         self.FK_data.update({'FK_abs': FK_data, 'theta': theta, 'kw': kw, 'freq': freq, 'iX': iX, 'iT': iT})
