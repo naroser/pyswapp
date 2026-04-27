@@ -93,27 +93,15 @@ def lorentzian_err(offsets, vel, f, nchannels = 24, dx = 1, **kwargs):
 
     Parameters
     ----------
-    offsets : array-like or None
-        Receiver offsets. If provided, dx and nchannels are inferred from it.
-    vel : float or array-like
-        Phase velocity.
-    f : float or array-like
-        Frequency.
-    nchannels : int, optional
-        Number of channels (ignored if offsets provided).
-    dx : float, optional
-        Receiver spacing (ignored if offsets provided).
-    maxerr : float
-        Maximum relative velocity error (e.g., 0.4 means ≤40% of velocity).
-    minvelerr : float
-        Minimum absolute velocity error (m/s).
-    a : float
-        Parameter controlling error-bar tightening.
+    offsets : array-like or None, receiver offsets. If provided, dx and nchannels are inferred from it
+    vel : float or array-like, phase velocity
+    f : float or array-like, frequency
+    nchannels : int, optional, Number of channels (ignored if offsets provided)
+    dx : float, optional, Receiver spacing (ignored if offsets provided)
 
     Returns
     -------
-    deltac : float or np.ndarray
-        Estimated dispersion-curve error.
+    deltac : float or ndarray, estimated dispersion-curve error.
 
 
     References
