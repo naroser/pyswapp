@@ -1671,7 +1671,7 @@ class SeismicStream:
 
     # %% wavefield transformation
     def _inverse_fk_transform(self,FK_unwrap,iT,iX):
-        """Transformation to x-t domain"""
+        """Transformation from F-K to x-t domain"""
 
         iF = nextpow2(iT)[1]
         FK = np.zeros((iF,iF)).astype("complex")
@@ -1699,7 +1699,7 @@ class SeismicStream:
         return amps
 
     def _fk_transform(self):
-        """Transformation to F-K domain"""
+        """Transformation x-t to F-K domain"""
 
         if self._pst is None:
             st = self._st.copy()
@@ -1753,7 +1753,7 @@ class SeismicStream:
         return FK_abs, theta, kw, fpos,iX,iT
 
     def apply_fk_filter(self, points_list, key_list, **kwargs):
-        """apply fk filter from picking boundaries"""
+        """apply FK filter from picking boundaries"""
 
         FK_abs, theta, kw, freq, iX, iT = self._fk_transform(**kwargs)
 
@@ -1823,8 +1823,6 @@ class SeismicStream:
             self._fdbf()
         elif method.lower() == 'phaseshift':
             self._phaseshift()
-        elif method.lower() == 'radon':
-            self._inverse_radon()
         else:
             raise NotImplementedError(f'Transformation "{method}" not supported. '
                                       f'Use one of the keys: {keys}')
