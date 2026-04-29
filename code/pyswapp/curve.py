@@ -22,7 +22,16 @@ class DispersionCurve:
         self._wave = wave
 
     def init_data(self, freq, vel, err = None):
-        """initialize data"""
+        """
+        Initialize data
+
+        Parameters
+        ----------
+        freq : array-like, frequencies
+        vel : array-like, velocities
+        err : array-like, optional, data errors
+
+        """
 
         self.frequency = freq
         self.period = 1/freq
@@ -43,7 +52,14 @@ class DispersionCurve:
             self.npts_orig = len(self.data_orig)
 
     def read(self, fname):
-        """import data from file"""
+        """
+        Import data from file
+
+        Parameters
+        ----------
+        fname : str, path to dispersion curve data
+
+        """
 
         if fname.endswith('.csv'):
             dat, _ = read_DC_csv(fname)
@@ -55,12 +71,31 @@ class DispersionCurve:
         self.init_data(dat[:, 0], dat[:, 1], err)
 
     def _estimate_error(self,offsets=None,nchannels=24,dx=1,**kwargs):
-        """estimate error"""
+        """
+        Estimate dispersion-curve uncertainty after O'Neill et al. (2003).
+
+        Parameters
+        ----------
+        offsets : array-like or None, receiver offsets. If provided, dx and nchannels are inferred from it
+        nchannels : int, optional, Number of channels (ignored if offsets provided)
+        dx : float, optional, Receiver spacing (ignored if offsets provided)
+
+        Returns
+        -------
+        ndarray
+
+        References
+        ----------
+        O’Neill, A., Dentith, M., & List, R., 2003. Full-waveform P-SV
+        reflectivity inversion of surface waves for shallow engineering
+        applications, Exploration Geophysics, 34(3), 158–173.
+
+        """
         err = lorentzian_err(offsets, self.velocity, self.frequency, nchannels, dx, **kwargs)
         return err
 
     def estimate_error(self,**kwargs):
-        """estimate error"""
+        """Estimate error"""
 
         err = self._estimate_error(**kwargs)
         data = self.data.copy()
@@ -71,26 +106,84 @@ class DispersionCurve:
         return curve_new
 
     def set(self,param, value, orig = True):
-        """set a parameter"""
+        """
+        Set a parameter
+
+        Parameters
+        ----------
+        param : str, parameter name
+        value : array-like, parameter
+        orig : bool, default True
+
+        """
 
         self.data[param] = value
         if orig:
             self.data_orig[param] = value
 
     def _compute_wavenumber(self,frequency,velocity):
-        """compute wavenumber"""
+        """
+        Compute wavenumber
+
+        Parameters
+        ----------
+        frequency : ndarray, frequency
+        velocity : ndarray, velocity
+
+        Returns
+        -------
+        ndarray
+
+        """
         return wavenumber(frequency,velocity)
 
     def _compute_wavelength(self,frequency,velocity):
-        """compute wavelength"""
+        """
+        Compute wavelength
+
+
+        Parameters
+        ----------
+        frequency : ndarray, frequency
+        velocity : ndarray, velocity
+
+        Returns
+        -------
+        ndarray
+
+        """
         return wavelength(frequency,velocity)
 
     def _compute_velocity(self,frequency,wavenumber):
-        """compute velocity"""
+        """
+        Compute velocity
+
+        Parameters
+        ----------
+        frequency : ndarray, frequency
+        wavenumber : ndarray, wavenumber
+
+        Returns
+        -------
+        ndarray
+
+        """
         return phase_velocity(frequency,wavenumber)
 
     def _compute_frequency(self,wavelength,velocity):
-        """compute frequency"""
+        """
+        Compute frequency
+
+        Parameters
+        ----------
+        wavelength : ndarray, wavelength
+        velocity : ndarray, velocity
+
+        Returns
+        -------
+        ndarray
+
+        """
         return frequency(wavelength,velocity)
 
     def get_data(self):
@@ -102,7 +195,20 @@ class DispersionCurve:
         return data
 
     def resample(self, pmin, pmax, pn, pspace = 'log', param = 'frequency', kind = 'cubic', inplace = False,**kwargs):
-        """resample data"""
+        """
+        Resample all curves
+
+        Parameters
+        ----------
+        pmin : float, minimum value
+        pmax : float, maximum value
+        pn : int, number of points
+        pspace : str, default 'log', scale
+        param: str, specify the parameter the new sampling interval is applied to
+        kind : str, default 'cubic', specifies the kind of interpolation
+        inplace : bool, default True, if True, perform operation in-place
+
+        """
 
         data = self.data.copy()
 
@@ -154,7 +260,15 @@ class DispersionCurve:
         return vel_convolved
 
     def smooth(self,kernel_size=5,inplace = False):
-        """smooth data"""
+        """
+        Smooth data
+
+        Parameters
+        ----------
+        kernel_size : int, kernel size
+        inplace : bool, default True, if True, perform operation in-place
+
+        """
 
         data = self.data.copy()
 
@@ -249,7 +363,7 @@ class DispersionCurve:
         self.markInvalid(pmin,pmax,param)
         return self.dropInvalid(inplace)
 
-    def save(self, prjdir, pre, format, parkseis_params=None):
+    def save(self, prjdir, pre, format):
         """save dispersion curve data to file"""
 
         data = self.data.copy()
@@ -367,7 +481,6 @@ class DispersionCurve:
         return fig
 
     def plotColumn(self, data = None, axes=None, outfile=None, fmt=None, show=True, **kwargs):
-        """plot dispersion curve data as 1D column to construct pseudosection"""
 
         if axes is None:
             fig, ax = plt.subplots(figsize=(6, 4))
